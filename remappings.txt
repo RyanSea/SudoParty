@@ -1,0 +1,8 @@
+ds-test/=lib/forge-std/lib/ds-test/src/
+forge-std/=lib/forge-std/src/
+lssvm/=lib/lssvm/src/
+openzeppelin-contracts-upgradeable/=lib/lssvm/lib/openzeppelin-contracts-upgradeable/
+openzeppelin-contracts/=lib/lssvm/lib/openzeppelin-contracts/
+prb-math/=lib/lssvm/lib/prb-math/contracts/
+solmate/=lib/solmate/src/
+weird-erc20/=lib/lssvm/lib/solmate/lib/weird-erc20/src/
