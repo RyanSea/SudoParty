@@ -3,8 +3,9 @@ pragma solidity ^0.8.13;
 
 import "lssvm/LSSVMPair.sol";
 
-import "lssvm/ILSSVMPairFactoryLike.sol";
+import "./Interfaces/ILSSVMRouter.sol";
 
+/// @dev added name() and symbol() to IERC721.sol
 import "openzeppelin/token/ERC721/IERC721.sol";
 
 import "openzeppelin/utils/Strings.sol";
@@ -13,13 +14,15 @@ import "solmate/tokens/ERC20.sol";
 
 /// @title SudoParty!
 /// @author Autocrat 
-/// @notice buys and fractionalizes nft's from sudoswap
+/// @notice buys and fractionalizes nft's from Sudoswap
 /// @author modified from PartyBid
 contract SudoParty is ERC20 {
 
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/ 
+
+    ILSSVMRouter public immutable router;
 
     LSSVMPair public immutable pool;
 
@@ -28,14 +31,16 @@ contract SudoParty is ERC20 {
     uint public immutable id;
 
     constructor(
+        ILSSVMRouter _router,
         LSSVMPair _pool, 
         IERC721 _nft, 
         uint _id
     ) ERC20(
-        string(abi.encodePacked(_nft.name(), String.toString(_id), "Vault")),
-        string(abi.encode(_nft.symbol(), String.toString(_id))),
+        string(abi.encodePacked(_nft.name(), Strings.toString(_id), "Vault")),
+        string(abi.encode(_nft.symbol(), Strings.toString(_id))),
         18
     ){
+        router = _router;
         pool = _pool;
         nft = _nft;
         id = _id;
@@ -46,9 +51,11 @@ contract SudoParty is ERC20 {
     /// @notice 100 tokens per .001 ether
     uint public constant token_scale = 100;
 
+    address public constant rinkeby_pairfactory = 0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5;
+
     enum Status { 
         active, 
-        closed, 
+        closed,
         finalized
     }
 
@@ -58,7 +65,7 @@ contract SudoParty is ERC20 {
     }
 
     /*///////////////////////////////////////////////////////////////
-                            STATE VARIABLES
+                            PARTY VARIABLES
     //////////////////////////////////////////////////////////////*/ 
 
     /// @notice nft price
@@ -86,7 +93,7 @@ contract SudoParty is ERC20 {
     mapping (address => Contribution[]) public contributions;
 
     /*///////////////////////////////////////////////////////////////
-                            PROTOCOL FUNCTIONS
+                            SUDOPARTY FUNCTIONS
     //////////////////////////////////////////////////////////////*/ 
 
     /// @notice adds msg.sender's contribution and accounts for it
@@ -114,33 +121,39 @@ contract SudoParty is ERC20 {
         contributed += amount;
     }
 
-    function buy(address pool, uint id) public {
+    /// @notice attempts to buy nft, unused eth is returned to contract
+    function buy() public payable {
         require(status == Status.active, "PARTY_CLOSED");
 
-        status = Status.closed;
-
+        // initialize PairSwapSpecifc
         ILSSVMRouter.PairSwapSpecific memory swap;
 
         swap.pair = LSSVMPair(pool);
         swap.nftIds = new uint[](1);
         swap.nftIds[0] = id;
 
+        // initialize PairSwapSpecifc[] which is a param for buying nft's by id
         ILSSVMRouter.PairSwapSpecific[] memory pairList = new ILSSVMRouter.PairSwapSpecific[](1);
 
         pairList[0] = swap;
 
+        // update price
         getPrice();
 
-        market.swapETHForSpecificNFTs(
+        assert(contributed >= price);
+
+        // attempt to buy
+        router.swapETHForSpecificNFTs {value: price} (
             pairList, 
             payable(address(this)), 
             address(this), 
-            block.timestamp + 180 // deadline
+            block.timestamp + 240 // deadline
         );
 
-        spent = price;
+        status = Status.closed;
     }
 
+    /// @notice mints tokens & closes party for successful purchase
     function finalize() public {
         require(status == Status.closed, "NOT_FINALIZE_READY");
 
@@ -149,30 +162,40 @@ contract SudoParty is ERC20 {
         if (complete) {
             status = Status.finalized;
 
-            unpent = address(this).balance;
+            unspent = address(this).balance;
 
-            uint memory tokens = spent / .001 ether * token_scale;
-        } 
+            uint tokens = spent / .001 ether * token_scale;
+
+            _mint(address(this), tokens);
+        }
     }
 
+    /// @notice returns user's claimable assets
+    /// @notice allows for rage-quitting 
+    /// ToDo ensure non re-entry
     function claim(address contributor) public {
-        require(status == Status.finalized, "NOT_FINALIZED");
-
         require(totalUsercontribution[contributor] > 0, "NO_CONTRIBUTION");
 
         require(!claimed[contributor], "ALREADY_CLAIMED");
 
         claimed[contributor] = true;
 
+        (uint tokens, uint eth) = getClaimAmount(contributor);
 
+        if (eth > 0) payable(contributor).transfer(eth);
+
+        if (tokens > 0) transfer(contributor, tokens);
     }
 
     /*///////////////////////////////////////////////////////////////
-                                ACCOUNTING                                                   
+                            CONTRIBUTOR ACCOUNTING                                                   
     //////////////////////////////////////////////////////////////*/
 
     function getClaimAmount(address contributor) public view returns (uint tokens, uint eth) {
         if (spent > 0) {
+            eth = ethUsed(contributor);
+
+            tokens = eth / .001 ether * token_scale;
 
         } else {
             eth = totalUsercontribution[contributor];
@@ -180,20 +203,37 @@ contract SudoParty is ERC20 {
     }
 
     function ethUsed(address contrbutor) public view returns (uint eth) {
+        uint totalSpent = spent;
 
+        uint totalContributions = contributions[contrbutor].length;
+
+        uint _amount;
+
+        Contribution memory contribution;
+
+        for(uint i; i < totalContributions; i++) {
+            contribution = contributions[contrbutor][i];
+
+            _amount = contribution.amount + contribution.totalContributions <= totalSpent ?
+                contribution.amount : contribution.totalContributions < totalSpent ?
+                    totalSpent - contribution.totalContributions : 0;
+            
+            if (_amount == 0) break;
+
+            eth += _amount;
+        }
     }
 
     /*///////////////////////////////////////////////////////////////
-                                POOL QUERY                                                    
+                                SUDO QUERY                                                    
     //////////////////////////////////////////////////////////////*/
 
+    /// @notice return true if pool holds nft id
     function isListed() public view returns (bool listed) {
-        listed = ILSSVMPairFactoryLike(0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5)
-            .isPair(pool, ILSSVMPairFactoryLike.PairVariant.ENUMERABLE_ETH);
-
-        if(listed) listed = nft.ownerOf(id) == pool;
+        listed = nft.ownerOf(id) == address(pool);
     }
 
+    /// @notice sets price to current spot price and returns price
     function getPrice() public returns (uint) {
         require(isListed(), "NOT_LISTED");
 
@@ -201,5 +241,4 @@ contract SudoParty is ERC20 {
 
         return price = newSpotPrice;
     }
-    
 }
