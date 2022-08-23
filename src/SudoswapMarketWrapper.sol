@@ -19,6 +19,8 @@ contract SudoswapMarketWrapper is IMarketWrapper {
 
     ILSSVMRouter public immutable market;
 
+    bool public finalized;
+
     constructor(address _LSSVMRouter) {
         market = ILSSVMRouter(_LSSVMRouter);
     }
@@ -38,25 +40,34 @@ contract SudoswapMarketWrapper is IMarketWrapper {
         if(listed) listed = ERC721(nft).ownerOf(id) == pool;
     }
 
+    /// @notice gets spot price of pool based on uint256 of pool address
     function getPrice(address pool) public view returns (uint price) {
-        (   , 
-            uint newSpotPrice,
-            uint newDelta,
-            uint inputAmount,
-            uint protocolFee
-        ) = LSSVMPair(pool).getBuyNFTQuote(1);
+        (, uint newSpotPrice,,,) = LSSVMPair(pool).getBuyNFTQuote(1);
 
         price = newSpotPrice;
     }
 
-    /// TODO allow for the b
-    function buy(address pool, uint id) public payable returns(uint unspent) {
+    function buy(address pool, uint id) external {
+        ILSSVMRouter.PairSwapSpecific memory swap;
 
+        swap.pair = LSSVMPair(pool);
+        swap.nftIds = new uint[](1);
+        swap.nftIds[0] = id;
+
+        ILSSVMRouter.PairSwapSpecific[] memory pairList = new ILSSVMRouter.PairSwapSpecific[](1);
+
+        pairList[0] = swap;
+
+        market.swapETHForSpecificNFTs(
+            pairList, 
+            payable(msg.sender), 
+            msg.sender, 
+            block.timestamp + 180
+        );
     }
 
-
     /*///////////////////////////////////////////////////////////////
-                    UNIMPLEMENTED FUNCTIONS & CORRELATES 
+                   UNIMPLEMENTED FUNCTIONS & CORRELATES 
     //////////////////////////////////////////////////////////////*/ 
 
     /// @notice correlated to isListed
@@ -64,14 +75,20 @@ contract SudoswapMarketWrapper is IMarketWrapper {
         uint256 auctionId,
         address nftContract,
         uint256 tokenId
-    ) public virtual view returns (bool);
+    ) public virtual view returns (bool){}
 
     /// @notice correlated to getPrice
-    function getMinimumBid(uint256 auctionId) public virtual view returns (uint256);
-    function getCurrentHighestBidder(uint256 auctionId) public virtual view returns (address);
+    function getMinimumBid(uint256 auctionId) public virtual override view returns (uint256){}
+
+    /// @notice not needed — not an auction
+    function getCurrentHighestBidder(uint256 auctionId) public virtual override view returns (address){}
 
     /// @notice correlated to buy
-    function bid(uint256 auctionId, uint256 bidAmount) public virtual;
+    function bid(uint256 auctionId, uint256 bidAmount) external{}
+    
+    /// @notice not needed — not an auction
+    function isFinalized(uint256) external pure returns (bool){}
 
-
+    /// @notice not needed — not an auction
+    function finalize(uint256) external {}
 }

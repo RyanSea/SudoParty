@@ -619,84 +619,6 @@
         }
       }
     },
-    "lib/lssvm/lib/solmate/src/tokens/ERC20.sol": {
-      "lastModificationDate": 1660930820563,
-      "contentHash": "662de6a5d2642f736990c1af96c6073a",
-      "sourceName": "lib/lssvm/lib/solmate/src/tokens/ERC20.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs"
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": ">=0.8.0",
-      "artifacts": {
-        "ERC20": {
-          "0.8.15+commit.e14f2714.Darwin.appleclang": "ERC20.sol/ERC20.json"
-        }
-      }
-    },
-    "lib/lssvm/lib/solmate/src/utils/SafeTransferLib.sol": {
-      "lastModificationDate": 1660930820563,
-      "contentHash": "93213df07ffe5dd70c2ef8dd00ae70d7",
-      "sourceName": "lib/lssvm/lib/solmate/src/utils/SafeTransferLib.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs"
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [
-        "lib/lssvm/lib/solmate/src/tokens/ERC20.sol"
-      ],
-      "versionRequirement": ">=0.8.0",
-      "artifacts": {
-        "SafeTransferLib": {
-          "0.8.15+commit.e14f2714.Darwin.appleclang": "SafeTransferLib.sol/SafeTransferLib.json"
-        }
-      }
-    },
     "lib/lssvm/src/ILSSVMPairFactoryLike.sol": {
       "lastModificationDate": 1660930813430,
       "contentHash": "fd26871fca6a83de34aead374f6397a8",
@@ -737,8 +659,6 @@
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
-        "lib/lssvm/lib/solmate/src/tokens/ERC20.sol",
-        "lib/lssvm/lib/solmate/src/utils/SafeTransferLib.sol",
         "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
         "lib/lssvm/src/LSSVMPair.sol",
         "lib/lssvm/src/LSSVMRouter.sol",
@@ -746,7 +666,9 @@
         "lib/lssvm/src/bonding-curves/ICurve.sol",
         "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
         "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
-        "lib/lssvm/src/lib/ReentrancyGuard.sol"
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol"
       ],
       "versionRequirement": "^0.8.0",
       "artifacts": {
@@ -795,8 +717,6 @@
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
-        "lib/lssvm/lib/solmate/src/tokens/ERC20.sol",
-        "lib/lssvm/lib/solmate/src/utils/SafeTransferLib.sol",
         "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
         "lib/lssvm/src/LSSVMPair.sol",
         "lib/lssvm/src/LSSVMRouter.sol",
@@ -804,7 +724,9 @@
         "lib/lssvm/src/bonding-curves/ICurve.sol",
         "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
         "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
-        "lib/lssvm/src/lib/ReentrancyGuard.sol"
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol"
       ],
       "versionRequirement": "^0.8.0",
       "artifacts": {
@@ -853,8 +775,6 @@
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
-        "lib/lssvm/lib/solmate/src/tokens/ERC20.sol",
-        "lib/lssvm/lib/solmate/src/utils/SafeTransferLib.sol",
         "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
         "lib/lssvm/src/LSSVMPair.sol",
         "lib/lssvm/src/LSSVMRouter.sol",
@@ -862,7 +782,9 @@
         "lib/lssvm/src/bonding-curves/ICurve.sol",
         "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
         "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
-        "lib/lssvm/src/lib/ReentrancyGuard.sol"
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol"
       ],
       "versionRequirement": "^0.8.0",
       "artifacts": {
@@ -1068,6 +990,125 @@
         }
       }
     },
+    "lib/solmate/src/tokens/ERC20.sol": {
+      "lastModificationDate": 1660937283909,
+      "contentHash": "0c7c7ada139062536af09d69d96d395c",
+      "sourceName": "lib/solmate/src/tokens/ERC20.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.8.0",
+      "artifacts": {
+        "ERC20": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "ERC20.sol/ERC20.json"
+        }
+      }
+    },
+    "lib/solmate/src/tokens/ERC721.sol": {
+      "lastModificationDate": 1660937283909,
+      "contentHash": "ecc06cefc5404b9e1adbc2e459d5757e",
+      "sourceName": "lib/solmate/src/tokens/ERC721.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.8.0",
+      "artifacts": {
+        "ERC721": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "ERC721.sol/ERC721.json"
+        },
+        "ERC721TokenReceiver": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "ERC721.sol/ERC721TokenReceiver.json"
+        }
+      }
+    },
+    "lib/solmate/src/utils/SafeTransferLib.sol": {
+      "lastModificationDate": 1660937283910,
+      "contentHash": "db5e8a3ee2df4fb8eb2d552a01753920",
+      "sourceName": "lib/solmate/src/utils/SafeTransferLib.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/solmate/src/tokens/ERC20.sol"
+      ],
+      "versionRequirement": ">=0.8.0",
+      "artifacts": {
+        "SafeTransferLib": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "SafeTransferLib.sol/SafeTransferLib.json"
+        }
+      }
+    },
     "script/Contract.s.sol": {
       "lastModificationDate": 1660891167541,
       "contentHash": "3642d05d9c479368231825c40aaa276a",
@@ -1150,8 +1191,8 @@
       }
     },
     "src/Interfaces/ILSSVMRouter.sol": {
-      "lastModificationDate": 1660941865596,
-      "contentHash": "1321baaf91c156bbcc80d675e452d59a",
+      "lastModificationDate": 1661121549947,
+      "contentHash": "88436a4c8a47af1d0fa420a76568b61a",
       "sourceName": "src/Interfaces/ILSSVMRouter.sol",
       "solcConfig": {
         "settings": {
@@ -1189,8 +1230,6 @@
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
-        "lib/lssvm/lib/solmate/src/tokens/ERC20.sol",
-        "lib/lssvm/lib/solmate/src/utils/SafeTransferLib.sol",
         "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
         "lib/lssvm/src/LSSVMPair.sol",
         "lib/lssvm/src/LSSVMRouter.sol",
@@ -1198,7 +1237,9 @@
         "lib/lssvm/src/bonding-curves/ICurve.sol",
         "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
         "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
-        "lib/lssvm/src/lib/ReentrancyGuard.sol"
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol"
       ],
       "versionRequirement": "^0.8.13",
       "artifacts": {
@@ -1246,8 +1287,8 @@
       }
     },
     "src/SudoswapMarketWrapper.sol": {
-      "lastModificationDate": 1660941944921,
-      "contentHash": "6b4abcc8899d852c1fa25c996b273446",
+      "lastModificationDate": 1661192632362,
+      "contentHash": "845d31519fcb1c710336f58cd4682406",
       "sourceName": "src/SudoswapMarketWrapper.sol",
       "solcConfig": {
         "settings": {
@@ -1275,8 +1316,31 @@
           "libraries": {}
         }
       },
-      "imports": [],
-      "versionRequirement": null,
+      "imports": [
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155Receiver.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Receiver.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/Address.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
+        "lib/lssvm/lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
+        "lib/lssvm/src/LSSVMPair.sol",
+        "lib/lssvm/src/LSSVMRouter.sol",
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/lssvm/src/bonding-curves/ICurve.sol",
+        "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
+        "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/tokens/ERC721.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Interfaces/ILSSVMRouter.sol",
+        "src/Interfaces/IMarketWrapper.sol"
+      ],
+      "versionRequirement": "^0.8.13",
       "artifacts": {
         "SudoswapMarketWrapper": {
           "0.8.15+commit.e14f2714.Darwin.appleclang": "SudoswapMarketWrapper.sol/SudoswapMarketWrapper.json"
