@@ -13,7 +13,7 @@ import "openzeppelin/utils/Strings.sol";
 import "solmate/tokens/ERC20.sol";
 
 /// @title SudoParty!
-/// @author Autocrat 
+/// @author Autocrat (Ryan)
 /// @notice buys and fractionalizes nft's from Sudoswap
 /// @author modified from PartyBid
 contract SudoParty is ERC20 {
@@ -28,28 +28,30 @@ contract SudoParty is ERC20 {
 
     IERC721 public immutable nft;
 
+    uint public immutable deadline;
+
     uint public immutable id;
 
     constructor(
-        ILSSVMRouter _router,
-        LSSVMPair _pool, 
-        IERC721 _nft, 
+        address _router,
+        address _pool, 
+        address _nft, 
+        uint deadline,
         uint _id
+
+        //symbol e.g. PUNK6529
     ) ERC20(
-        string(abi.encodePacked(_nft.name(), Strings.toString(_id), "Vault")),
-        string(abi.encode(_nft.symbol(), Strings.toString(_id))),
+        string(abi.encodePacked(IERC721(_nft).name(), Strings.toString(_id), "Fraction")),
+        string(abi.encode(IERC721(_nft).symbol(), Strings.toString(_id))),
         18
     ){
-        router = _router;
-        pool = _pool;
-        nft = _nft;
+        router = ILSSVMRouter(_router);
+        pool = LSSVMPair(_pool);
+        nft = IERC721(_nft);
         id = _id;
 
         status = Status.active;
     }
-
-    /// @notice 100 tokens per .001 ether
-    uint public constant token_scale = 100;
 
     address public constant rinkeby_pairfactory = 0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5;
 
@@ -74,23 +76,42 @@ contract SudoParty is ERC20 {
     /// @notice eth spent
     uint public spent;
 
-    /// @notice remaining eth after purchase
-    uint public unspent;
-
     /// @notice total contributed
     uint public contributed;
 
     /// @notice current status of party
     Status public status;
 
+    /// @notice SudoParty Manager
+    address public manager;
+
     /// @notice contributor => whether or not they claimed
     mapping(address => bool) public claimed;
 
     /// @notice user contributions counter
-    mapping (address => uint) public totalUsercontribution;
+    mapping (address => uint) public totalUserContribution;
 
     /// @notice user contributions holder
     mapping (address => Contribution[]) public contributions;
+
+    /*///////////////////////////////////////////////////////////////
+                                PARTY EVENTS
+    //////////////////////////////////////////////////////////////*/ 
+
+    event NewContribution(
+        address indexed contributor, 
+        uint amount, 
+        uint all_user_contributions,
+        uint all_party_contributions
+    );
+
+    event Claimed(
+        address indexed contribtutor,
+        uint contributionSpent,
+        uint contributionUnspent
+    );
+
+    event PartyWon(uint cost, uint unspent);
 
     /*///////////////////////////////////////////////////////////////
                             SUDOPARTY FUNCTIONS
@@ -99,8 +120,6 @@ contract SudoParty is ERC20 {
     /// @notice adds msg.sender's contribution and accounts for it
     function contribute() public payable {
         require(status == Status.active, "PARTY_CLOSED");
-
-        address contributor = msg.sender;
 
         uint amount = msg.value;
 
@@ -112,13 +131,15 @@ contract SudoParty is ERC20 {
         Contribution memory contribution = Contribution(amount, contributed);
 
         // push to user contributions holder
-        contributions[contributor].push(contribution);
+        contributions[msg.sender].push(contribution);
 
         // add amount to user contributions counter 
-        totalUsercontribution[contributor] += amount;
+        totalUserContribution[msg.sender] += amount;
 
         // add amount to total contributed to party
         contributed += amount;
+
+        emit NewContribution(msg.sender, amount, totalUserContribution[msg.sender], contributed);
     }
 
     /// @notice attempts to buy nft, unused eth is returned to contract
@@ -140,20 +161,25 @@ contract SudoParty is ERC20 {
         // update price
         getPrice();
 
+        // assert to keep the price update to state
         assert(contributed >= price);
 
         // attempt to buy
-        router.swapETHForSpecificNFTs {value: price} (
+        uint unspent = router.swapETHForSpecificNFTs {value: price} (
             pairList, 
             payable(address(this)), 
             address(this), 
             block.timestamp + 240 // deadline
         );
 
+        spent = price;
+
         status = Status.closed;
+
+        emit PartyWon(spent, unspent);
     }
 
-    /// @notice mints tokens & closes party for successful purchase
+    /// @notice mints tokens & closes party if purchase succeeded
     function finalize() public {
         require(status == Status.closed, "NOT_FINALIZE_READY");
 
@@ -162,47 +188,41 @@ contract SudoParty is ERC20 {
         if (complete) {
             status = Status.finalized;
 
-            unspent = address(this).balance;
+            _mint(address(this), spent);
 
-            uint tokens = spent / .001 ether * token_scale;
-
-            _mint(address(this), tokens);
+        } else if (block.timestamp >= deadline) {
+            status = Status.finalized;
         }
     }
 
     /// @notice returns user's claimable assets
-    /// @notice allows for rage-quitting 
-    /// ToDo ensure non re-entry
+    /// TODO ensure non re-entry
     function claim(address contributor) public {
-        require(totalUsercontribution[contributor] > 0, "NO_CONTRIBUTION");
+        require(status == Status.finalized, "NOT_FINALIZED");
+
+        require(totalUserContribution[contributor] > 0, "NO_CONTRIBUTION");
 
         require(!claimed[contributor], "ALREADY_CLAIMED");
 
         claimed[contributor] = true;
 
-        (uint tokens, uint eth) = getClaimAmount(contributor);
+        // _spent = tokens to give, _unspent = eth to return
+        (uint tokens, uint eth) = ethSpent(contributor);
 
         if (eth > 0) payable(contributor).transfer(eth);
 
         if (tokens > 0) transfer(contributor, tokens);
+
+        emit Claimed(contributor, tokens, eth);
     }
 
     /*///////////////////////////////////////////////////////////////
                             CONTRIBUTOR ACCOUNTING                                                   
     //////////////////////////////////////////////////////////////*/
 
-    function getClaimAmount(address contributor) public view returns (uint tokens, uint eth) {
-        if (spent > 0) {
-            eth = ethUsed(contributor);
-
-            tokens = eth / .001 ether * token_scale;
-
-        } else {
-            eth = totalUsercontribution[contributor];
-        }
-    }
-
-    function ethUsed(address contrbutor) public view returns (uint eth) {
+    /// @notice returns the amount of eth that was spent & unspent from a contributor 
+    function ethSpent(address contrbutor) public view returns (uint _spent, uint _unspent) {
+        
         uint totalSpent = spent;
 
         uint totalContributions = contributions[contrbutor].length;
@@ -211,17 +231,24 @@ contract SudoParty is ERC20 {
 
         Contribution memory contribution;
 
-        for(uint i; i < totalContributions; i++) {
-            contribution = contributions[contrbutor][i];
+        if (totalSpent > 0) {
 
-            _amount = contribution.amount + contribution.totalContributions <= totalSpent ?
-                contribution.amount : contribution.totalContributions < totalSpent ?
-                    totalSpent - contribution.totalContributions : 0;
-            
-            if (_amount == 0) break;
+            for(uint i; i < totalContributions; i++) {
+                contribution = contributions[contrbutor][i];
 
-            eth += _amount;
+                _amount = contribution.amount + contribution.totalContributions <= totalSpent ?
+                    contribution.amount : contribution.totalContributions < totalSpent ?
+                        totalSpent - contribution.totalContributions : 0;
+                
+                // if 0 eth was contributed, any subsequent contributions are meaningless
+                if (_amount == 0) break;
+
+                _spent += _amount;
+            }
+
         }
+
+        _unspent = totalContributions - _spent;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -240,5 +267,15 @@ contract SudoParty is ERC20 {
         (, uint newSpotPrice,,,) = pool.getBuyNFTQuote(1);
 
         return price = newSpotPrice;
+    }
+
+    /*///////////////////////////////////////////////////////////////
+                            PARTY MANAGER                                                   
+    //////////////////////////////////////////////////////////////*/
+
+    function withdraw() public {
+        require(msg.sender == manager, "NOT_MANAGER");
+
+        _burn(manager, totalSupply);
     }
 }

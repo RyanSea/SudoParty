@@ -12,6 +12,7 @@ import "lssvm/LSSVMPair.sol";
 import {ERC721} from "solmate/tokens/ERC721.sol";
 
 /// TODO Allow for the buying of mutliple nft's / integrate all of sudoswap's functionality
+/// TODO figure out deadline in function buy
 contract SudoswapMarketWrapper is IMarketWrapper {
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -62,7 +63,7 @@ contract SudoswapMarketWrapper is IMarketWrapper {
             pairList, 
             payable(msg.sender), 
             msg.sender, 
-            block.timestamp + 180
+            block.timestamp + 180 // deadline
         );
     }
 
