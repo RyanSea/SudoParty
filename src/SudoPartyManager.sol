@@ -259,7 +259,7 @@ contract SudoPartyManager is ERC20 {
     function handleRelist(Proposal memory _proposal) private {
         uint128 _price = uint128(_proposal.priceOrConsensus);
         
-        // fee = 0.5% | unused
+        // fee = 0.5% (unused)
         //uint96 _fee = uint96(_price * 5 / 100);
 
         // set & init ids array

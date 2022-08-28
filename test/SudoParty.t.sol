@@ -13,7 +13,7 @@ import "src/Interfaces/ILSSVMPairFactory.sol";
 
 //import "src/Interfaces/ILSSVMRouter.sol";
 
-// forge test --match-contract SudoPartyTest --rpc-url $RINKEBY_RPC_URL --chain-id 4  -vvvv
+// forge test --match-contract SudoPartyTest --rpc-url $RINKEBY_RPC_URL --chain-id 4  -vvv
 
 contract SudoPartyTest is Test {
 
@@ -29,7 +29,10 @@ contract SudoPartyTest is Test {
 
     IERC721 nft;
 
-    uint id;
+    uint id;   
+
+    // SudoPartyManager-created pool
+    address relisting;
 
     Utils internal utils;
 
@@ -53,7 +56,7 @@ contract SudoPartyTest is Test {
         vm.label(users[0], "Ryan");
         vm.label(users[1], "Nich");
         vm.label(users[2], "Owen");
-        vm.label(users[3], "Sharelove");
+        vm.label(users[3], "ShareLove");
 
         ryan = users[0];
         nich = users[1];
@@ -69,20 +72,11 @@ contract SudoPartyTest is Test {
         nft = IERC721(0x9c70d80558b17a558a33F9DFe922FfF7FBf19AE2);
 
         id = 10;
-
-        sudopartyWhitelist();
-
-        contribute();
-        openAndContribute();
-        buy();
-        finalize();
-        
-        claim();
-        stake();
-        createProposal();
     }
 
     function sudopartyWhitelist() public {
+        assertEq(nft.ownerOf(id), address(pool));
+
         uint deadline = block.timestamp + 1 days;
 
         address[] memory party = new address[](3);
@@ -93,18 +87,7 @@ contract SudoPartyTest is Test {
 
         sudoparty = new SudoParty(party, 33, deadline, router, factory, pool, nft, id);
     }
-
-    function testWhitelist() public {
-        bool ryanListed = sudoparty.whitelisted(ryan);
-        bool nichListed = sudoparty.whitelisted(nich);
-        bool owenListed = sudoparty.whitelisted(owen);
-
-        assertTrue(ryanListed && nichListed && owenListed);
-        assertFalse(sudoparty.whitelisted(sharelove));
-
-        console.log("Nich, Ryan, & Owen Successfully Whitelisted");
-    }
-
+   
     function contribute() public {
         vm.prank(ryan);
         sudoparty.contribute{value: .5 ether}();
@@ -121,30 +104,30 @@ contract SudoPartyTest is Test {
         vm.expectRevert("NOT_MEMBER");
         vm.prank(sharelove);
         sudoparty.contribute{value: 1 ether}();
-        console.log("Sharelove was unable to contribute because they weren't whitelisted");
+        console.log("ShareLove was unable to contribute because they weren't whitelisted");
     }
 
-    function openAndContribute() public {
+    function addAndContribute() public {
         vm.prank(ryan);
-        sudoparty.openParty();
+        sudoparty.whitelistAdd(sharelove);
+        console.log("ShareLove added to List!");
 
         vm.prank(sharelove);
         sudoparty.contribute{value: 1 ether}();
-        console.log("Sharelove contributed 1 eth");
+        console.log("ShareLove contributed 1 eth");
     }
 
     function buy() public {
         vm.prank(ryan);
         sudoparty.buy();
-        assertEq(nft.ownerOf(id), address(manager));
     }
 
     function finalize() public {
         sudoparty.finalize();
 
         manager = sudoparty.manager();
-
         assertTrue(nft.ownerOf(id) == address(manager));
+        console.log("NFT Successfully Group Purchased");
     }
 
     function claim() public {
@@ -198,6 +181,8 @@ contract SudoPartyTest is Test {
     function createProposal() public {
         vm.prank(ryan);
         manager.createProposal(SudoPartyManager.ProposalType.sell, 6 ether);
+
+        console.log("Proposal To Re-List Token Made");
     }
 
     function vote() public {
@@ -209,23 +194,43 @@ contract SudoPartyTest is Test {
 
         vm.prank(nich);
         manager.vote(1, true);
+
+        console.log("ShareLove, Owen, & Nich Voted Yes!");
     }
 
-    function testWhole() public {
-        vote();
+    function finalizeVote() public {
         vm.prank(ryan);
         manager.finalize(1);
-        
-        (,uint _price,,bool passed,uint yes,uint no,) = manager.proposal(1);
 
-        console.log("PASSED?", passed);
-        console.log("PRICE", _price);
-        console.log("YES",yes);
-        console.log("NO", no);
+        relisting = manager.listing();
+        assertEq(nft.ownerOf(id), address(relisting));
+        console.log("NFT Successfully Re-Listed!");
     }
 
+    function testWhitelist() public {
+        sudopartyWhitelist();
 
+        bool ryanListed = sudoparty.whitelisted(ryan);
+        bool nichListed = sudoparty.whitelisted(nich);
+        bool owenListed = sudoparty.whitelisted(owen);
 
+        assertTrue(ryanListed && nichListed && owenListed);
+        assertTrue(sudoparty.whitelisted(sharelove) == false);
 
+        console.log("Nich, Ryan, & Owen Successfully Whitelisted");
+    }
+
+    function testContribute() public {
+        sudopartyWhitelist();
+        contribute();
+        addAndContribute();
+        buy();
+        finalize();
+        claim();
+        stake();
+        createProposal();
+        vote();
+        finalizeVote();
+    }
 
 }

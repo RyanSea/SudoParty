@@ -12,10 +12,8 @@ import "openzeppelin/token/ERC721/IERC721.sol";
 
                                 /// @notice UNUSED EXAMPLE  ///
 
-/// @title SudoParty Hub
-/// @author Autocrat (Ryan)
+
 /// @notice router for SudoParties
-/// todo create more interfaces, split up contacts
 contract SudoPartyHub {
 
     /*///////////////////////////////////////////////////////////////

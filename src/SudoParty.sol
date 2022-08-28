@@ -49,6 +49,7 @@ contract SudoParty is ERC20, IERC721Receiver {
     LSSVMPair public immutable pool;
 
     /// @notice target nft
+    /// @dev added name() and symbol() to the interface
     IERC721 public immutable nft;
 
     /// @notice target nft id
