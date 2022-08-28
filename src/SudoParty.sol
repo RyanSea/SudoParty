@@ -5,6 +5,8 @@ import "lssvm/LSSVMPair.sol";
 
 import "./Interfaces/ILSSVMRouter.sol";
 
+import "./Interfaces/ILSSVMPairFactory.sol";
+
 /// @dev added name() and symbol() to IERC721.sol
 import "openzeppelin/token/ERC721/IERC721.sol";
 
@@ -14,21 +16,28 @@ import "solmate/tokens/ERC20.sol";
 
 import "./SudoPartyManager.sol";
 
+import "openzeppelin/token/ERC721/IERC721Receiver.sol";
+
+import "forge-std/console.sol";
+
 /// @title SudoParty!
 /// @author Autocrat (Ryan)
 /// @notice buys and fractionalizes nft's from Sudoswap
 /// @author modified from PartyBid
-contract SudoParty is ERC20 {
+contract SudoParty is ERC20, IERC721Receiver {
 
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/ 
 
     /// @notice address => if its on whitelist
-    mapping (address => bool) whitelisted;
+    mapping (address => bool) public whitelisted;
 
-    /// @notice Sudoswap router address
+    /// @notice Sudoswap router
     ILSSVMRouter public immutable router;
+
+    /// @notice Sudoswap factory
+    ILSSVMPairFactory public immutable factory;
 
     /// @notice 0 - 100 (%)| consensus needed to pass a yes vote
     uint public immutable consensus;
@@ -45,16 +54,17 @@ contract SudoParty is ERC20 {
     /// @notice target nft id
     uint public immutable id;
 
-    /// @notice whether or not this party is open to all
+    /// @notice if party is open to any contributors
     bool public open;
 
     constructor(
         address[] memory whitelist,
         uint _consensus,
         uint _deadline,
-        address _router,
-        address _pool, 
-        address _nft, 
+        ILSSVMRouter _router,
+        ILSSVMPairFactory _factory,
+        LSSVMPair _pool, 
+        IERC721 _nft, 
         uint _id
     ) ERC20(
         // e.g. CRYPTOPUNKS#6529 Fraction
@@ -64,22 +74,21 @@ contract SudoParty is ERC20 {
         18
     ) {
         consensus = _consensus >= 100 ? 100 : _consensus;
-        router = ILSSVMRouter(_router);
-        pool = LSSVMPair(_pool);
-        nft = IERC721(_nft);
+        router = _router;
+        factory = _factory;
+        pool = _pool;
+        nft = _nft;
         deadline = _deadline;
         id = _id;
 
+        // set whitelist if any
         setWhitelist(whitelist);
-
-        status = Status.active;
     }
 
     address public constant rinkeby_pairfactory = 0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5;
 
     enum Status { 
         active, 
-        closed,
         finalized
     }
 
@@ -87,6 +96,8 @@ contract SudoParty is ERC20 {
         uint amount;
         uint totalContributions;
     }
+
+    receive() external payable{}
 
     /*///////////////////////////////////////////////////////////////
                             PARTY VARIABLES
@@ -148,9 +159,6 @@ contract SudoParty is ERC20 {
         require(open ? true : whitelisted[msg.sender], "NOT_MEMBER");
 
         uint amount = msg.value;
-
-        // ensure total contribution isn't higher than nft price + arbitrary amount
-        require(amount + partybank <= getPrice() + 2 ether, "CONTRIBUTION_TOO_HIGH");
         
         require(amount > 0, "CONTRIBUTION_TOO_LOW");
 
@@ -191,20 +199,16 @@ contract SudoParty is ERC20 {
         // update price
         getPrice();
 
-        // assert to keep the price update to state
+        // using assert to keep the uptaded price to state
         assert(partybank >= price);
 
-        // attempt to buy
-        uint unspent = router.swapETHForSpecificNFTs {value: price} (
+        // temp partybank value arg should be replaced with a correct price variable from getPrice();
+        uint unspent = router.swapETHForSpecificNFTs {value: partybank} (
             pairList, 
             payable(address(this)), 
             address(this), 
             block.timestamp + 240 // swap deadline
         );
-
-        spent = price;
-
-        status = Status.closed;
 
         emit PartyWon(spent, unspent);
     }
@@ -212,25 +216,29 @@ contract SudoParty is ERC20 {
     /// @notice mints tokens & creates SudoPartyManager if purchase succeeded
     /// @notice finalizes party if purchase succeeded or deadline passed
     function finalize() public {
-        bool complete = nft.ownerOf(id) == address(this);
+        bool successful = nft.ownerOf(id) == address(this);
 
-        if (complete) {
+        spent = partybank - address(this).balance;
+
+        if (successful) {
             status = Status.finalized;
 
             _mint(address(this), spent);
 
-            manager = new SudoPartyManager(name, symbol);
+           manager = new SudoPartyManager(name, symbol);
+
+           nft.transferFrom(address(this), address(manager), id);
 
         } else if (block.timestamp >= deadline) {
             status = Status.finalized;
         }
 
-        if(status == Status.finalized) emit Finalized(complete);
+        if(status == Status.finalized) emit Finalized(successful);
     }
 
     /// @notice returns user's claimable assets if party is finaized
-    /// TODO ensure non re-entry
-    function claim(address contributor) public {
+    /// todo ensure non re-entry
+    function claim(address contributor) public returns (uint eth, uint tokens) {
         require(status == Status.finalized, "NOT_FINALIZED");
 
         require(totalUserContribution[contributor] > 0, "NO_CONTRIBUTION");
@@ -240,11 +248,16 @@ contract SudoParty is ERC20 {
         claimed[contributor] = true;
 
         // _spent = tokens to give, _unspent = eth to return
-        (uint tokens, uint eth) = ethSpent(contributor);
+        (tokens, eth) = ethSpent(contributor);
 
         if (eth > 0) payable(contributor).transfer(eth);
 
-        if (tokens > 0) transfer(contributor, tokens);
+        if (tokens > 0) {
+            // temp its necessary to burn and mint to avoid an overflow due to this contract being solmate erc20
+            // todo turn the token into a separate erc20 contract
+            _burn(address(this), tokens);
+            _mint(contributor, tokens);
+        }
 
         emit Claimed(contributor, tokens, eth);
     }
@@ -259,7 +272,7 @@ contract SudoParty is ERC20 {
     /// @dev this does in one function what PartyBid does in 2 
     function ethSpent(address contrbutor) public view returns (uint _spent, uint _unspent) {
         
-        // memory holder for total spent on nft
+        // load total spent on nft to memory
         uint totalSpent = spent;
 
         // memory holder for total user contribtions
@@ -281,19 +294,16 @@ contract SudoParty is ERC20 {
                 _amount = contribution.amount + contribution.totalContributions <= totalSpent ?
                     contribution.amount : contribution.totalContributions < totalSpent ?
                         totalSpent - contribution.totalContributions : 0;
-                
+
                 // if 0 eth was contributed, any subsequent contributions are meaningless
                 if (_amount == 0) break;
 
                 _spent += _amount;
             }
-
-                // guard against rounding errors h/t PartyBid
-                _spent = _spent <= totalSupply ? _spent : totalSupply;
         }
 
         // if 0 is spent on nft then _spent is 0
-        _unspent = totalContributions - _spent;
+        _unspent = totalUserContribution[contrbutor] - _spent;
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -329,7 +339,13 @@ contract SudoParty is ERC20 {
     function openParty() public {
         require(whitelisted[msg.sender], "NOT_CONTRIBUTOR");
 
-        open == true;
+        open = true;
+    }
+
+    function claimSale(uint _amount) public {
+        require(msg.sender == address(manager), "NOT_MANAGER");
+
+        _burn(msg.sender, _amount);
     }
 
     // @notice increases deadline to new deadline
@@ -339,29 +355,17 @@ contract SudoParty is ERC20 {
 
     //     require(deadline + 1 weeks >= _newDeadline, "TOO_FAR");
 
-    //     deadline = _newDeadline;
+    //     deadline = _newDeadline
     // }
 
     /// @notice transfers nft & burns all tokens when staked users vote to withdraw nft
-    /// @notice transfers nft & burns all tokens when staked sole-owner withdraws nft
+    /// @notice transfers nft & burns all tokens when sole-owner withdraws nft
     function withdraw(address newOwner) public {
         require(msg.sender == address(manager), "NOT_MANAGER");
 
         nft.safeTransferFrom(address(this), newOwner, id);
 
         _burn(address(manager), totalSupply);
-    }
-
-    /// @notice tranfers nft & burns all tokens when un-staked sole-owner withdraws nft
-    /// note secure while using tx.origin because SudoPartyManager requires msg.sender be owner
-    function withdrawUnstaked(address newOwner) public {
-        require(balanceOf[tx.origin] == totalSupply, "NOT_OWNER");
-
-        require(msg.sender == address(manager), "NOT_MANAGER");
-
-        nft.safeTransferFrom(address(this), newOwner, id);
-
-        _burn(tx.origin, totalSupply);
     }
 
     /// @notice sets party permissions at SudoParty construction
@@ -375,5 +379,14 @@ contract SudoParty is ERC20 {
                 whitelisted[_whitelist[i]] = true;
             }
         }
+    }
+
+    function onERC721Received(
+        address, 
+        address, 
+        uint, 
+        bytes calldata
+    ) external pure returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
     }
 }
