@@ -6,7 +6,8 @@ import "openzeppelin/token/ERC721/IERC721.sol";
 import "./ILSSVMPairFactory.sol";
 
 interface ISudoParty {
-    //======== SudoParty ========//
+    //======== SudoParty View ========//
+
     function nft() external view returns (IERC721);
 
     function spent() external view returns (uint);
@@ -17,9 +18,29 @@ interface ISudoParty {
 
     function id() external view returns (uint);
 
+    //======== SudoParty Functions ========//
+
+    function setManager(address manager) external;
+
+    function whitelistAdd(address contributor) external;
+
+    function openParty() external;
+
+    function contribute() external payable;
+
+    function buy() external;
+
+    function finalize() external;
+
+    function claim(address contriutor) external;
+
+    //======== SudoParty Manager Functions ========//
+
     function claimSale(uint _amount) external;
 
-    function withdraw(address newOwner) external;
+    function burn(address from, uint amount) external;
+
+    function allow(uint amount, address account) external;
 
     //======== ERC-20 ========//
 

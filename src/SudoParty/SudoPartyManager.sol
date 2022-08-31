@@ -1,22 +1,16 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "./Interfaces/ILSSVMPairFactory.sol";
+import "../Interfaces/ILSSVMPairFactory.sol";
+
+import "../Interfaces/ISudoParty.sol";
 
 import "solmate/tokens/ERC20.sol";
 
 import "lssvm/bonding-curves/ICurve.sol";
 
-import "lssvm/LSSVMPairETH.sol";
-
-//import "./SudoParty.sol";
-
-import "forge-std/console.sol";
-
-import "./Interfaces/ISudoParty.sol";
-
 /// @title SudoParty Manager
-/// @author Autocrat (Ryan)
+/// @author Autocrat 
 /// @notice token governance for successful SudoParties
 /// idea a curator role with special powers could be added
 contract SudoPartyManager is ERC20 {
@@ -38,13 +32,16 @@ contract SudoPartyManager is ERC20 {
     /// @notice 0 - 100% | tokens needed to complete a vote
     uint public consensus;
     
-    constructor(string memory _name, string memory _symbol) 
-    ERC20(
+    constructor(
+        string memory _name, 
+        string memory _symbol,
+        address party
+    ) ERC20(
         string(abi.encodePacked("Staked ", _name)),
         string(abi.encodePacked("s", _symbol)),
         18
     ){
-        token = ISudoParty(msg.sender);
+        token = ISudoParty(party);
 
         nft = token.nft();
         id = token.id();
@@ -112,6 +109,8 @@ contract SudoPartyManager is ERC20 {
 
         uint _amount =  memberBalance >= amount ? amount : memberBalance;
 
+        token.allow(amount, msg.sender);
+
         token.transferFrom(msg.sender, address(this), _amount);
 
         _mint(member, _amount);
@@ -132,12 +131,12 @@ contract SudoPartyManager is ERC20 {
     }
 
     /// @notice claim sale of relisting
-    function claim(uint amount) public onlyStaked {
-        uint _amount = amount > balanceOf[msg.sender] ? balanceOf[msg.sender] : amount;
+    function claim() public onlyStaked {
+        uint _amount = balanceOf[msg.sender];
 
         _burn(msg.sender, _amount);
 
-        token.claimSale(_amount);
+        token.burn(address(this), _amount);
     }
 
     /*///////////////////////////////////////////////////////////////
@@ -147,7 +146,11 @@ contract SudoPartyManager is ERC20 {
     /// @notice creates proposal
     /// @param _type proposal type
     /// @param _amount relisting price or new consensus
-    function createProposal(ProposalType _type, uint _amount) public onlyStaked {
+    function createProposal(
+        ProposalType _type, 
+        uint _amount,
+        address _withdrawal
+    ) public onlyStaked {
         proposal_id++;
 
         // ensure arg <= 100 if ProposalType == set_consensus
@@ -158,6 +161,7 @@ contract SudoPartyManager is ERC20 {
         _proposal.proposalType = _type;
         _proposal.priceOrConsensus = price_or_consensus;
         _proposal.deadline = block.timestamp + 1 days;
+        _proposal.withdrawal = _withdrawal;
 
         proposal[proposal_id] = _proposal;
     }
@@ -189,7 +193,7 @@ contract SudoPartyManager is ERC20 {
 
     /// @notice finalize proposal
     /// @param _id proposal id
-    function finalize(uint _id) public onlyStaked {
+    function finalize(uint _id) public {
         require(!finalized[_id], "ALREADY_FINALIZED");
 
         Proposal memory _proposal = proposal[_id];
@@ -225,7 +229,6 @@ contract SudoPartyManager is ERC20 {
 
     /// @notice withdraws to staked / unstaked sole-owner
     /// todo ensure non-rentry
-    /// note just a PoC
     function withdraw(address _address) public {
         uint _tokens = token.balanceOf(msg.sender);
 
@@ -233,8 +236,17 @@ contract SudoPartyManager is ERC20 {
 
         assert(_stake + _tokens == token.totalSupply());
 
-        token.withdraw(_address);
+        if (_tokens > 0) token.burn(msg.sender, _tokens);
+
+        if (_stake > 0) {
+            _burn(msg.sender, _stake);
+
+            token.burn(address(this), token.balanceOf(address(this)));
+        }
+
+        nft.transferFrom(address(this), _address, id);
     }
+    
     /*///////////////////////////////////////////////////////////////
                             PROPOSAL HANDLERS
     //////////////////////////////////////////////////////////////*/
@@ -258,9 +270,6 @@ contract SudoPartyManager is ERC20 {
     /// @notice relists nft on sudoswap & sets listing address
     function handleRelist(Proposal memory _proposal) private {
         uint128 _price = uint128(_proposal.priceOrConsensus);
-        
-        // fee = 0.5% (unused)
-        //uint96 _fee = uint96(_price * 5 / 100);
 
         // set & init ids array
         uint[] memory _ids = new uint[](1);
@@ -268,18 +277,16 @@ contract SudoPartyManager is ERC20 {
 
         nft.approve(address(factory), id);
 
-        LSSVMPairETH pair = factory.createPairETH(
+        listing = address(factory.createPairETH(
             nft,
             linearCurve,
             payable(address(this)),
-            LSSVMPair.PoolType.NFT,
+            ILSSVMPair.PoolType.NFT,
             .01 ether,
             0,
             _price,
             _ids
-        );
-
-        listing = address(pair);
+        ));
     }
 
     /// @notice changes consensus
@@ -292,4 +299,15 @@ contract SudoPartyManager is ERC20 {
         nft.transferFrom(address(this), _withdrawal, id);
     }
 
+    /*///////////////////////////////////////////////////////////////
+                                SOULBOUND                                                   
+    //////////////////////////////////////////////////////////////*/
+
+    function transfer(address, uint) public virtual override returns (bool) {
+        revert("SOULBOUND");
+    }
+
+    function transferFrom(address, address, uint) public virtual override returns (bool) {
+        revert("SOULBOUND");
+    }
 }

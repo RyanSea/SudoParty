@@ -9,7 +9,7 @@ import "lssvm/bonding-curves/ICurve.sol";
 
 import "lssvm/LSSVMPairETH.sol";
 
-import "lssvm/LSSVMPair.sol";
+import "./ILSSVMPair.sol";
 
 
 interface ILSSVMPairFactory is ILSSVMPairFactoryLike {
@@ -17,7 +17,7 @@ interface ILSSVMPairFactory is ILSSVMPairFactoryLike {
         IERC721 _nft,
         ICurve _bondingCurve,
         address payable _assetRecipient,
-        LSSVMPair.PoolType _poolType,
+        ILSSVMPair.PoolType _poolType,
         uint128 _delta,
         uint96 _fee,
         uint128 _spotPrice,

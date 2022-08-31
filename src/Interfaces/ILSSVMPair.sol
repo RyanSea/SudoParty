@@ -11,6 +11,14 @@ interface ILSSVMPair {
         TRADE
     }
 
+    function swapTokenForSpecificNFTs(
+        uint256[] calldata nftIds,
+        uint256 maxExpectedTokenInput,
+        address nftRecipient,
+        bool isRouter,
+        address routerCaller
+    ) external payable returns (uint256 inputAmount);
+
     function getBuyNFTQuote(uint256 numNFTs)
         external
         view

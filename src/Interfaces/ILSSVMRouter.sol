@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "lssvm/LSSVMPair.sol";
+import "./ILSSVMPair.sol";
 
 /// @title Sudoswap's LSSVMRouter.sol Interface
 interface ILSSVMRouter {
@@ -10,12 +10,12 @@ interface ILSSVMRouter {
     //////////////////////////////////////////////////////////////*/ 
 
     struct PairSwapAny {
-        LSSVMPair pair;
+        ILSSVMPair pair;
         uint256 numItems;
     }
 
     struct PairSwapSpecific {
-        LSSVMPair pair;
+        ILSSVMPair pair;
         uint256[] nftIds;
     }
 
