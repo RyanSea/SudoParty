@@ -8,17 +8,17 @@ interface ISudoPartyManager {
         withdraw
     }
 
-    function stake(uint amount) external;
+    function stake(address sender, uint amount) external;
 
-    function unstake(uint amount) external;
+    function unstake(address sender, uint amount) external;
 
-    function createProposal(ProposalType _type, uint amount, address withdrawal) external;
+    function createProposal(address sender, ProposalType _type, uint amount, address withdrawal) external;
 
-    function vote(uint id, bool yes) external;
+    function vote(address sender, uint id, bool yes) external;
 
     function finalize(uint id) external;
 
-    function claim() external;
+    function claim(address sender) external;
 
-    function withdraw(address withdrawal) external;
+    function withdraw(address sender, address withdrawal) external;
 }

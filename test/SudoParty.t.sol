@@ -51,50 +51,50 @@ contract SudoPartyTest is Test {
         withdraw
     }
 
-    function setUp() public {
-        utils = new Utils();
-        users = utils.createUsers(4);
+    // function setUp() public {
+    //     utils = new Utils();
+    //     users = utils.createUsers(4);
 
-        vm.label(users[0], "Ryan");
-        vm.label(users[1], "Nich");
-        vm.label(users[2], "Owen");
-        vm.label(users[3], "ShareLove");
+    //     vm.label(users[0], "Ryan");
+    //     vm.label(users[1], "Nich");
+    //     vm.label(users[2], "Owen");
+    //     vm.label(users[3], "ShareLove");
 
-        ryan = users[0];
-        nich = users[1];
-        owen = users[2];
-        sharelove = users[3];
+    //     ryan = users[0];
+    //     nich = users[1];
+    //     owen = users[2];
+    //     sharelove = users[3];
 
-        router = ILSSVMRouter(0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5);
+    //     router = ILSSVMRouter(0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5);
 
-        factory = ILSSVMPairFactory(0xcB1514FE29db064fa595628E0BFFD10cdf998F33);
+    //     factory = ILSSVMPairFactory(0xcB1514FE29db064fa595628E0BFFD10cdf998F33);
 
-        pool = ILSSVMPair(0xbc1703Cc4295Acefb7FbC1Cd107146eD8AfBE4dD);
+    //     pool = ILSSVMPair(0xbc1703Cc4295Acefb7FbC1Cd107146eD8AfBE4dD);
 
-        nft = IERC721(0x9c70d80558b17a558a33F9DFe922FfF7FBf19AE2);
+    //     nft = IERC721(0x9c70d80558b17a558a33F9DFe922FfF7FBf19AE2);
 
-        id = 10;
+    //     id = 10;
 
-        address party_factory = address(new PartyFactory());
-        address manager_factory = address(new ManagerFactory());
+    //     address party_factory = address(new PartyFactory());
+    //     address manager_factory = address(new ManagerFactory());
 
-        sudoparty = new SudoPartyHub(party_factory, manager_factory);
+    //     sudoparty = new SudoPartyHub(party_factory, manager_factory);
 
-    }
+    // }
 
-    function sudopartyWhitelist() public {
-        assertEq(nft.ownerOf(id), address(pool));
+    // function sudopartyWhitelist() public {
+    //     assertEq(nft.ownerOf(id), address(pool));
 
-        uint deadline = block.timestamp + 1 days;
+    //     uint deadline = block.timestamp + 1 days;
 
-        address[] memory party = new address[](3);
+    //     address[] memory party = new address[](3);
 
-        party[0] = ryan;
-        party[1] = nich;
-        party[2] = owen;
+    //     party[0] = ryan;
+    //     party[1] = nich;
+    //     party[2] = owen;
 
-        sudoparty.startParty(party, deadline, 33, address(factory), address(router), address(pool), address(nft), id);
-    }
+    //     sudoparty.startParty(party, deadline, 33, address(factory), address(router), address(pool), address(nft), id);
+    // }
    
     // function contribute() public {
     //     vm.prank(ryan);

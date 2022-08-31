@@ -1202,6 +1202,44 @@
         }
       }
     },
+    "src/Auth/Monarchy.sol": {
+      "lastModificationDate": 1661979251869,
+      "contentHash": "d9b83f556bcca4d892e4df621cf5a57e",
+      "sourceName": "src/Auth/Monarchy.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.13",
+      "artifacts": {
+        "Monarchy": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "Monarchy.sol/Monarchy.json"
+        }
+      }
+    },
     "src/Factories/ManagerFactory.sol": {
       "lastModificationDate": 1661933779168,
       "contentHash": "8271ec8b9abcf15dcdbaae6ba8db6677",
@@ -1253,6 +1291,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/ISudoParty.sol",
@@ -1296,7 +1335,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
         "lib/lssvm/src/LSSVMPair.sol",
         "lib/lssvm/src/LSSVMPairETH.sol",
@@ -1318,6 +1356,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/ILSSVMRouter.sol",
@@ -1549,8 +1588,8 @@
       }
     },
     "src/Interfaces/ISudoParty.sol": {
-      "lastModificationDate": 1661922620239,
-      "contentHash": "cc47697a821ab3b5683537c80515eaa8",
+      "lastModificationDate": 1661979886553,
+      "contentHash": "6d492bd7be8e557e40e1d0cd345ef69f",
       "sourceName": "src/Interfaces/ISudoParty.sol",
       "solcConfig": {
         "settings": {
@@ -1610,8 +1649,8 @@
       }
     },
     "src/Interfaces/ISudoPartyManager.sol": {
-      "lastModificationDate": 1661902861327,
-      "contentHash": "fcde908eb79b004bb890fa82d91319a2",
+      "lastModificationDate": 1661981567362,
+      "contentHash": "d9b24a26cffc957baa3f56f9c06b9d02",
       "sourceName": "src/Interfaces/ISudoPartyManager.sol",
       "solcConfig": {
         "settings": {
@@ -1648,8 +1687,8 @@
       }
     },
     "src/SudoParty/SudoParty.sol": {
-      "lastModificationDate": 1661933829520,
-      "contentHash": "d15d23bc8d3abb7ac59ffab6a664f1f2",
+      "lastModificationDate": 1661981730697,
+      "contentHash": "311f197ae04a29d47a14edf8fa0aa5ce",
       "sourceName": "src/SudoParty/SudoParty.sol",
       "solcConfig": {
         "settings": {
@@ -1678,7 +1717,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/src/console.sol",
         "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
         "lib/lssvm/src/LSSVMPair.sol",
         "lib/lssvm/src/LSSVMPairETH.sol",
@@ -1700,6 +1738,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/ILSSVMRouter.sol",
@@ -1713,8 +1752,8 @@
       }
     },
     "src/SudoParty/SudoPartyManager.sol": {
-      "lastModificationDate": 1661933496635,
-      "contentHash": "ebf3a23c1dfed24ac408572bda85adc6",
+      "lastModificationDate": 1661981557595,
+      "contentHash": "4f9739b6b1ae5ae9731a31f30c9d7ef3",
       "sourceName": "src/SudoParty/SudoPartyManager.sol",
       "solcConfig": {
         "settings": {
@@ -1763,6 +1802,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/ISudoParty.sol"
@@ -1775,8 +1815,8 @@
       }
     },
     "src/SudoPartyHub.sol": {
-      "lastModificationDate": 1661933948182,
-      "contentHash": "e18cb0a8f5b61b9fccbb51372e4135a6",
+      "lastModificationDate": 1661981934177,
+      "contentHash": "00403613e0c05e105920c9031b1967b9",
       "sourceName": "src/SudoPartyHub.sol",
       "solcConfig": {
         "settings": {
@@ -1826,6 +1866,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/IManagerFactory.sol",
@@ -1841,8 +1882,8 @@
       }
     },
     "test/SudoParty.t.sol": {
-      "lastModificationDate": 1661923694012,
-      "contentHash": "aee6c74a8306163e65ba81277754c76b",
+      "lastModificationDate": 1661981853312,
+      "contentHash": "c0a7699b17664415850c0c721898802b",
       "sourceName": "test/SudoParty.t.sol",
       "solcConfig": {
         "settings": {
@@ -1899,6 +1940,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
         "src/Factories/ManagerFactory.sol",
         "src/Factories/PartyFactory.sol",
         "src/Interfaces/ILSSVMPair.sol",

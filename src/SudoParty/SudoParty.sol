@@ -14,13 +14,13 @@ import "../Interfaces/ISudoPartyManager.sol";
 
 import "openzeppelin/token/ERC721/IERC721Receiver.sol";
 
-import "forge-std/console.sol";
+import "Monarchy/";
 
 /// @title SudoParty!
 /// @author Autocrat (Ryan)
 /// @notice buys and fractionalizes nft's from Sudoswap
 /// @author modified from PartyBid
-contract SudoParty is ERC20, IERC721Receiver {
+contract SudoParty is ERC20, IERC721Receiver, Monarchy {
 
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -150,24 +150,24 @@ contract SudoParty is ERC20, IERC721Receiver {
     //////////////////////////////////////////////////////////////*/ 
 
     /// @notice adds to contributor whitelist
-    function whitelistAdd(address _contributor) public {
-        require(whitelisted[msg.sender], "NOT_CONTRIBUTOR");
+    function whitelistAdd(address sender, address _contributor) public {
+        require(whitelisted[sender], "NOT_CONTRIBUTOR");
 
         whitelisted[_contributor] = true;
     }
 
     /// @notice opens party to any contributors
-    function openParty() public {
-        require(whitelisted[msg.sender], "NOT_CONTRIBUTOR");
+    function openParty(address sender) public {
+        require(whitelisted[sender], "NOT_CONTRIBUTOR");
 
         open = true;
     }
 
     /// @notice adds msg.sender's contribution
-    function contribute() public payable {
+    function contribute(address sender) public payable {
         require(status == Status.active, "PARTY_CLOSED");
 
-        require(open || whitelisted[msg.sender], "NOT_MEMBER");
+        require(open || whitelisted[sender], "NOT_MEMBER");
 
         uint amount = msg.value;
         
@@ -177,22 +177,22 @@ contract SudoParty is ERC20, IERC721Receiver {
         Contribution memory contribution = Contribution(amount, partybank);
 
         // push to user contributions holder
-        contributions[msg.sender].push(contribution);
+        contributions[sender].push(contribution);
 
         // add amount to user contributions counter 
-        totalUserContribution[msg.sender] += amount;
+        totalUserContribution[sender] += amount;
 
         // add amount to total contributed to party
         partybank += amount;
 
-        emit NewContribution(msg.sender, amount, totalUserContribution[msg.sender], partybank);
+        emit NewContribution(sender, amount, totalUserContribution[sender], partybank);
     }
 
     /// @notice attempts to buy nft 
     /// @notice sudoswap returns unused eth to contract
     /// @dev may need re-entrancy guard for buying non-specific nft's
-    /// note might a _deadline param for Sudoswap's deadline arg
-    function buy() public payable {
+    /// note might add a _deadline param for Sudoswap's deadline arg
+    function buy() public {
         require(status == Status.active, "PARTY_CLOSED");
 
         // initialize PairSwapSpecifc
@@ -207,8 +207,8 @@ contract SudoParty is ERC20, IERC721Receiver {
 
         pairList[0] = swap;
 
-        // update price
-        getPrice();
+        // update price | note: unsued | todo: fix getPrice()
+        //getPrice();
 
         // using assert to keep the uptaded price to state
         assert(partybank >= price);
@@ -338,7 +338,9 @@ contract SudoParty is ERC20, IERC721Receiver {
                             PARTY MANAGER                                                   
     //////////////////////////////////////////////////////////////*/
 
-    function setManager(address _manager) public {
+    /// @notice sets SudoParty Manager
+    /// @notice only callable from SudoPartyHub / contract owner
+    function setManager(address _manager) public ruled {
         manager = _manager;
     }
 

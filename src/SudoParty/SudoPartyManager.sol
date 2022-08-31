@@ -9,11 +9,13 @@ import "solmate/tokens/ERC20.sol";
 
 import "lssvm/bonding-curves/ICurve.sol";
 
+import "Monarchy/";
+
 /// @title SudoParty Manager
 /// @author Autocrat 
 /// @notice token governance for successful SudoParties
 /// idea a curator role with special powers could be added
-contract SudoPartyManager is ERC20 {
+contract SudoPartyManager is ERC20, Monarchy {
 
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -52,8 +54,8 @@ contract SudoPartyManager is ERC20 {
         linearCurve = ICurve(0x3764b9FE584719C4570725A2b5A2485d418A186E);
     }
 
-    modifier onlyStaked {
-        require(balanceOf[msg.sender] > 0, "NOT_STAKED");
+    modifier onlyStaked(address _sender) {
+        require(balanceOf[_sender] > 0, "NOT_STAKED");
         _;
     }
 
@@ -99,42 +101,41 @@ contract SudoPartyManager is ERC20 {
     //////////////////////////////////////////////////////////////*/ 
 
     /// @notice stake fractional tokens
+    /// @param sender user calling SudoPartyHub function
     /// @param amount to stake
-    function stake(uint amount) public {
-        address member = msg.sender;
-
-        uint memberBalance = token.balanceOf(msg.sender);
+    function stake(address sender, uint amount) public ruled {
+        uint memberBalance = token.balanceOf(sender);
 
         require(memberBalance > 0, "NO_TOKENS");
 
         uint _amount =  memberBalance >= amount ? amount : memberBalance;
 
-        token.allow(amount, msg.sender);
+        token.allow(amount, sender);
 
-        token.transferFrom(msg.sender, address(this), _amount);
+        token.transferFrom(sender, address(this), _amount);
 
-        _mint(member, _amount);
+        _mint(sender, _amount);
     }
 
     /// @notice unstake fractional tokens
+    /// @param sender user calling SudoPartyHub function
     /// @param amount to unstake
-    function unstake(uint amount) public onlyStaked {
-        address member = msg.sender;
-
-        uint memberStaked = balanceOf[member];
+    function unstake(address sender, uint amount) public ruled onlyStaked(sender) {
+        uint memberStaked = balanceOf[sender];
 
         uint _amount = memberStaked >= amount ? amount : memberStaked;
 
-        _burn(member, _amount);
+        _burn(sender, _amount);
 
-        token.transfer(member, _amount);
+        token.transfer(sender, _amount);
     }
 
     /// @notice claim sale of relisting
-    function claim() public onlyStaked {
-        uint _amount = balanceOf[msg.sender];
+    /// @param sender user calling SudoPartyHub function
+    function claim(address sender) public ruled onlyStaked(sender) {
+        uint _amount = balanceOf[sender];
 
-        _burn(msg.sender, _amount);
+        _burn(sender, _amount);
 
         token.burn(address(this), _amount);
     }
@@ -144,13 +145,15 @@ contract SudoPartyManager is ERC20 {
     //////////////////////////////////////////////////////////////*/
 
     /// @notice creates proposal
+    /// @param sender user calling SudoPartyHub function
     /// @param _type proposal type
     /// @param _amount relisting price or new consensus
     function createProposal(
+        address sender,
         ProposalType _type, 
         uint _amount,
         address _withdrawal
-    ) public onlyStaked {
+    ) public ruled onlyStaked(sender) {
         proposal_id++;
 
         // ensure arg <= 100 if ProposalType == set_consensus
@@ -167,9 +170,14 @@ contract SudoPartyManager is ERC20 {
     }
 
     /// @notice cast vote
+    /// @param sender user calling SudoPartyHub function
     /// @param _id proposal id
     /// @param _vote yes/no vote
-    function vote(uint _id, bool _vote) public onlyStaked {
+    function vote(
+        address sender, 
+        uint _id, 
+        bool _vote
+    ) public ruled onlyStaked(sender) {
         Proposal memory _proposal = proposal[_id];
 
         address member = msg.sender;
@@ -227,19 +235,21 @@ contract SudoPartyManager is ERC20 {
                             SOLE-OWNER WITHDRAW
     //////////////////////////////////////////////////////////////*/
 
+    /// @param sender user calling SudoPartyHub function
+    /// @param _address withdrawal address
     /// @notice withdraws to staked / unstaked sole-owner
     /// todo ensure non-rentry
-    function withdraw(address _address) public {
-        uint _tokens = token.balanceOf(msg.sender);
+    function withdraw(address sender, address _address) public ruled {
+        uint _tokens = token.balanceOf(sender);
 
-        uint _stake = balanceOf[msg.sender];
+        uint _stake = balanceOf[sender];
 
         assert(_stake + _tokens == token.totalSupply());
 
-        if (_tokens > 0) token.burn(msg.sender, _tokens);
+        if (_tokens > 0) token.burn(sender, _tokens);
 
         if (_stake > 0) {
-            _burn(msg.sender, _stake);
+            _burn(sender, _stake);
 
             token.burn(address(this), token.balanceOf(address(this)));
         }

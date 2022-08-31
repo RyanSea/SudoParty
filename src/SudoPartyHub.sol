@@ -89,33 +89,33 @@ contract SudoPartyHub {
                               SUDOPARTY FUNCTIONS
     //////////////////////////////////////////////////////////////*/
 
-    function whitelistAdd(address payable party, address new_contributor) public {
-        /* address sender = msg.sender; */
+    function whitelistAdd(address party, address new_contributor) public {
+        address sender = msg.sender; 
 
-        ISudoParty(party).whitelistAdd(/* sender, */ new_contributor);
+        ISudoParty(party).whitelistAdd(sender, new_contributor);
     }
 
-    function openParty(address payable party) public {
-        /* address sender = msg.sender; */
+    function openParty(address party) public {
+        address sender = msg.sender;
 
-        ISudoParty(party).openParty(/* sender */);
+        ISudoParty(party).openParty(sender);
     }
 
-    function contribute(address payable party) public payable {
-        /* address sender = msg.sender; */
+    function contribute(address party) public payable {
+        address sender = msg.sender; 
 
-        ISudoParty(party).contribute{value: msg.value}(/* sender */);
+        ISudoParty(party).contribute{value: msg.value}(sender);
     }
 
-    function buy(address payable party) public payable {
+    function buy(address party) public {
         ISudoParty(party).buy();
     }
 
-    function finalize(address payable party) public {
+    function finalize(address party) public {
         ISudoParty(party).finalize();
     }
 
-    function claim(address payable party, address contributor) public {
+    function claim(address party, address contributor) public {
         ISudoParty(party).claim(contributor);
     }
 
@@ -123,46 +123,52 @@ contract SudoPartyHub {
                             SUDOPARTY MANAGEMENT
     //////////////////////////////////////////////////////////////*/
 
-    function stake(address payable party, uint amount) public {
-        /* address sender = msg.sender; */
+    function stake(address party, uint amount) public {
+        address sender = msg.sender;
 
-        manager[ISudoParty(party)].stake(/* sender, */ amount);
+        manager[ISudoParty(party)].stake(sender, amount);
     }
 
-    function unstake(address payable party, uint amount) public {
-        /* address sender = msg.sender; */
+    function unstake(address party, uint amount) public {
+        address sender = msg.sender;
 
-        manager[ISudoParty(party)].unstake(/* sender, */ amount);
+        manager[ISudoParty(party)].unstake(sender, amount);
+    }
+
+    function claimSale(address party) public {
+        address sender = msg.sender;
+
+        manager[ISudoParty(party)].claim(sender);
     }
 
     function createProposal(
-        address payable party, 
+        address party, 
         ISudoPartyManager.ProposalType _type, 
         uint amount,
         address withdrawal
     ) public {
-        /* address sender = msg.sender; */
+        address sender = msg.sender;
 
-        manager[ISudoParty(party)].createProposal(/* sender, */ _type, amount, withdrawal);
+        manager[ISudoParty(party)].createProposal(sender, _type, amount, withdrawal);
     }
 
     function vote(
-        address payable party,
+        address party,
         uint id,
         bool yes
     ) public {
-        /* address sender = msg.sender; */
+        address sender = msg.sender;
 
-        manager[ISudoParty(party)].vote(/* sender, */ id, yes);
+        manager[ISudoParty(party)].vote(sender, id, yes);
     }
 
-    function finalizeProposal(address payable party, uint id) public {
+    function finalizeProposal(address party, uint id) public {
         manager[ISudoParty(party)].finalize(id);
     }
 
-    function withdraw(address payable party, address withdrawal) public {
-        /* address sender = msg.sender; */
+    function withdraw(address party, address withdrawal) public {
+        address sender = msg.sender;
 
-        manager[ISudoParty(party)].withdraw(/* sender, */ withdrawal);
+        manager[ISudoParty(party)].withdraw(sender, withdrawal);
     }
 }

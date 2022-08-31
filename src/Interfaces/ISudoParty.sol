@@ -22,11 +22,11 @@ interface ISudoParty {
 
     function setManager(address manager) external;
 
-    function whitelistAdd(address contributor) external;
+    function whitelistAdd(address sender, address contributor) external;
 
-    function openParty() external;
+    function openParty(address sender) external;
 
-    function contribute() external payable;
+    function contribute(address sender) external payable;
 
     function buy() external;
 
