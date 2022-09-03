@@ -9,6 +9,8 @@ import "solmate/tokens/ERC20.sol";
 
 import "lssvm/bonding-curves/ICurve.sol";
 
+import "openzeppelin/utils/structs/EnumerableSet.sol";
+
 import "Monarchy/";
 
 /// @title SudoParty Manager
@@ -20,6 +22,8 @@ contract SudoPartyManager is ERC20, Monarchy {
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/
+
+    using EnumerableSet for EnumerableSet.UintSet;
 
     ILSSVMPairFactory public immutable factory;
 
@@ -67,9 +71,10 @@ contract SudoPartyManager is ERC20, Monarchy {
 
     struct Proposal {
         ProposalType proposalType;
+        bool passed;
+        bool finalized;
         uint priceOrConsensus;
         uint deadline;
-        bool passed;
         uint yes;
         uint no;
         address withdrawal;
@@ -96,6 +101,9 @@ contract SudoPartyManager is ERC20, Monarchy {
     /// @notice address => proposal id => if they voted
     mapping (address => mapping(uint => bool)) public voted;
 
+    /// @notice set of active proposals
+    EnumerableSet.UintSet private activeProposals;
+
     /*///////////////////////////////////////////////////////////////
                                 STAKING
     //////////////////////////////////////////////////////////////*/ 
@@ -117,6 +125,7 @@ contract SudoPartyManager is ERC20, Monarchy {
         _mint(sender, _amount);
     }
 
+    /// todo ensure sender hasn't voted on any activeProposals (offchain, maybe nested set?)
     /// @notice unstake fractional tokens
     /// @param sender user calling SudoPartyHub function
     /// @param amount to unstake
@@ -159,6 +168,8 @@ contract SudoPartyManager is ERC20, Monarchy {
         // ensure arg <= 100 if ProposalType == set_consensus
         uint price_or_consensus = _type == ProposalType.set_consensus && _amount > 100 ? 100 : _amount;
 
+        activeProposals.add(proposal_id);
+
         Proposal memory _proposal;
 
         _proposal.proposalType = _type;
@@ -184,7 +195,7 @@ contract SudoPartyManager is ERC20, Monarchy {
 
         require(!voted[member][_id], "ALREADY_VOTED");
 
-        require(block.timestamp < _proposal.deadline, "DEADLINE_PASSED");
+        require(activeProposals.contains(_id) && block.timestamp < _proposal.deadline, "PROPOSAL_INACTIVE");
 
         voted[member][id] = true;
 
@@ -202,7 +213,9 @@ contract SudoPartyManager is ERC20, Monarchy {
     /// @notice finalize proposal
     /// @param _id proposal id
     function finalize(uint _id) public {
-        require(!finalized[_id], "ALREADY_FINALIZED");
+        require(activeProposals.contains(_id), "ALREADY_FINALIZED");
+
+        activeProposals.remove(_id);
 
         Proposal memory _proposal = proposal[_id];
 
