@@ -1124,6 +1124,44 @@
         }
       }
     },
+    "lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol": {
+      "lastModificationDate": 1660937258746,
+      "contentHash": "ae6770a4346d554259b5d0848d84a73d",
+      "sourceName": "lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": "^0.8.0",
+      "artifacts": {
+        "EnumerableSet": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "EnumerableSet.sol/EnumerableSet.json"
+        }
+      }
+    },
     "lib/solmate/src/tokens/ERC20.sol": {
       "lastModificationDate": 1660937283909,
       "contentHash": "0c7c7ada139062536af09d69d96d395c",
@@ -1289,6 +1327,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
         "src/Auth/Monarchy.sol",
@@ -1649,8 +1688,8 @@
       }
     },
     "src/Interfaces/ISudoPartyManager.sol": {
-      "lastModificationDate": 1661981567362,
-      "contentHash": "d9b24a26cffc957baa3f56f9c06b9d02",
+      "lastModificationDate": 1661982274573,
+      "contentHash": "b57887ec57929a3867c4d8f2ba1f11ba",
       "sourceName": "src/Interfaces/ISudoPartyManager.sol",
       "solcConfig": {
         "settings": {
@@ -1687,8 +1726,8 @@
       }
     },
     "src/SudoParty/SudoParty.sol": {
-      "lastModificationDate": 1661981730697,
-      "contentHash": "311f197ae04a29d47a14edf8fa0aa5ce",
+      "lastModificationDate": 1662027192210,
+      "contentHash": "7f6734bf57088f4c7612252180bd31c1",
       "sourceName": "src/SudoParty/SudoParty.sol",
       "solcConfig": {
         "settings": {
@@ -1752,8 +1791,8 @@
       }
     },
     "src/SudoParty/SudoPartyManager.sol": {
-      "lastModificationDate": 1661981557595,
-      "contentHash": "4f9739b6b1ae5ae9731a31f30c9d7ef3",
+      "lastModificationDate": 1662246806470,
+      "contentHash": "b1e967363a49f89e9d58fbb3895df0d0",
       "sourceName": "src/SudoParty/SudoPartyManager.sol",
       "solcConfig": {
         "settings": {
@@ -1800,6 +1839,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
         "src/Auth/Monarchy.sol",
@@ -1815,8 +1855,8 @@
       }
     },
     "src/SudoPartyHub.sol": {
-      "lastModificationDate": 1661981934177,
-      "contentHash": "00403613e0c05e105920c9031b1967b9",
+      "lastModificationDate": 1661982519095,
+      "contentHash": "4dec82d49631f8b7ed6e0ded39d51fe3",
       "sourceName": "src/SudoPartyHub.sol",
       "solcConfig": {
         "settings": {
@@ -1866,7 +1906,6 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
-        "src/Auth/Monarchy.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/IManagerFactory.sol",
@@ -1938,6 +1977,7 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
         "src/Auth/Monarchy.sol",

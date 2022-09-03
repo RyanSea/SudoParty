@@ -25,7 +25,7 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
     //////////////////////////////////////////////////////////////*/ 
-
+    
     /// @notice address => if its on whitelist
     mapping (address => bool) public whitelisted;
 
@@ -125,9 +125,9 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     mapping (address => Contribution[]) public contributions;
 
     /*///////////////////////////////////////////////////////////////
-                                PARTY EVENTS
+                              PARTY EVENTS
     //////////////////////////////////////////////////////////////*/ 
-
+    
     event NewContribution(
         address indexed contributor, 
         uint amount, 
@@ -146,9 +146,9 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     event PartyWon(uint cost, uint unspent);
 
     /*///////////////////////////////////////////////////////////////
-                            SUDOPARTY FUNCTIONS
+                          SUDOPARTY FUNCTIONS
     //////////////////////////////////////////////////////////////*/ 
-
+  
     /// @notice adds to contributor whitelist
     function whitelistAdd(address sender, address _contributor) public {
         require(whitelisted[sender], "NOT_CONTRIBUTOR");
@@ -273,9 +273,9 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     }
 
     /*///////////////////////////////////////////////////////////////
-                            CONTRIBUTOR ACCOUNTING                                                   
+                         CONTRIBUTOR ACCOUNTING                                                   
     //////////////////////////////////////////////////////////////*/
-
+    
     /// @notice returns the amount of eth that was spent & unspent from a contributor
     /// @notice total eth spent from contributor on purchase / their claimable amount of tokens
     /// @notice total unspent from contributor / their claimable amount of eth
@@ -319,7 +319,7 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     /*///////////////////////////////////////////////////////////////
                                 SUDO QUERY                                                    
     //////////////////////////////////////////////////////////////*/
-
+    
     /// @notice return true if pool holds nft id
     function isListed() public view returns (bool listed) {
         listed = nft.ownerOf(id) == address(pool);
@@ -335,9 +335,9 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     }
 
     /*///////////////////////////////////////////////////////////////
-                            PARTY MANAGER                                                   
+                              PARTY MANAGER                                                   
     //////////////////////////////////////////////////////////////*/
-
+    
     /// @notice sets SudoParty Manager
     /// @notice only callable from SudoPartyHub / contract owner
     function setManager(address _manager) public ruled {
