@@ -12,6 +12,8 @@ contract ManagerFactory {
     ) public returns (address) {
         SudoPartyManager manager = new SudoPartyManager(name, symbol, party);
 
+        manager.annoint(msg.sender);
+
         return address(manager);
     }
 }

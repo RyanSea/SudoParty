@@ -11,13 +11,15 @@ import "lssvm/bonding-curves/ICurve.sol";
 
 import "openzeppelin/utils/structs/EnumerableSet.sol";
 
+import "openzeppelin/token/ERC721/IERC721Receiver.sol";
+
 import "Monarchy/";
 
 /// @title SudoParty Manager
 /// @author Autocrat 
 /// @notice token governance for successful SudoParties
 /// idea a curator role with special powers could be added
-contract SudoPartyManager is ERC20, Monarchy {
+contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
 
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -81,6 +83,15 @@ contract SudoPartyManager is ERC20, Monarchy {
     }
 
     receive() external payable{}
+
+    function onERC721Received(
+        address, 
+        address, 
+        uint, 
+        bytes calldata
+    ) external pure returns (bytes4) {
+        return IERC721Receiver.onERC721Received.selector;
+    }
 
     /*///////////////////////////////////////////////////////////////
                             MANAGER VARIABLES

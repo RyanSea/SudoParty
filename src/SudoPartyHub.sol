@@ -38,6 +38,13 @@ contract SudoPartyHub {
                             SUDOPARTY CREATION
     //////////////////////////////////////////////////////////////*/ 
 
+    // [ [address,[4]], [address, [1]] ]
+    // [ [address, [6,10,500]], [address,[900,29]] ]
+
+    // function startPartySpecific(
+
+    // ){}
+
     function startParty(
         address[] memory whitelist,
         uint deadline,
@@ -47,7 +54,7 @@ contract SudoPartyHub {
         address pool, 
         address nft, 
         uint id
-    ) public returns (address _party) {
+    ) public returns (address payable _party) {
         IERC721 _nft = IERC721(nft);
 
         require(_nft.ownerOf(id) == pool, "NOT_LISTED");

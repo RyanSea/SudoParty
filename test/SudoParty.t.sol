@@ -9,6 +9,10 @@ import "src/Factories/PartyFactory.sol";
 
 import "src/Factories/ManagerFactory.sol";
 
+import "src/SudoParty/SudoParty.sol";
+
+import "src/SudoParty/SudoPartyManager.sol";
+
 import "src/SudoPartyHub.sol";
 
 import "src/Interfaces/ILSSVMPairFactory.sol";
@@ -21,7 +25,9 @@ contract SudoPartyTest is Test {
 
     SudoPartyHub sudoparty;
 
-    address party;
+    ISudoPartyManager manager;
+
+    address payable party;
 
     ILSSVMRouter router;
 
@@ -51,92 +57,104 @@ contract SudoPartyTest is Test {
         withdraw
     }
 
-    // function setUp() public {
-    //     utils = new Utils();
-    //     users = utils.createUsers(4);
+    function setUp() public {
+        utils = new Utils();
+        users = utils.createUsers(4);
 
-    //     vm.label(users[0], "Ryan");
-    //     vm.label(users[1], "Nich");
-    //     vm.label(users[2], "Owen");
-    //     vm.label(users[3], "ShareLove");
+        vm.label(users[0], "Ryan");
+        vm.label(users[1], "Nich");
+        vm.label(users[2], "Owen");
+        vm.label(users[3], "ShareLove");
 
-    //     ryan = users[0];
-    //     nich = users[1];
-    //     owen = users[2];
-    //     sharelove = users[3];
+        ryan = users[0];
+        nich = users[1];
+        owen = users[2];
+        sharelove = users[3];
 
-    //     router = ILSSVMRouter(0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5);
+        router = ILSSVMRouter(0x9ABDe410D7BA62fA11EF37984c0Faf2782FE39B5);
 
-    //     factory = ILSSVMPairFactory(0xcB1514FE29db064fa595628E0BFFD10cdf998F33);
+        factory = ILSSVMPairFactory(0xcB1514FE29db064fa595628E0BFFD10cdf998F33);
 
-    //     pool = ILSSVMPair(0xbc1703Cc4295Acefb7FbC1Cd107146eD8AfBE4dD);
+        pool = ILSSVMPair(0xbc1703Cc4295Acefb7FbC1Cd107146eD8AfBE4dD);
 
-    //     nft = IERC721(0x9c70d80558b17a558a33F9DFe922FfF7FBf19AE2);
+        nft = IERC721(0x9c70d80558b17a558a33F9DFe922FfF7FBf19AE2);
 
-    //     id = 10;
+        id = 10;
 
-    //     address party_factory = address(new PartyFactory());
-    //     address manager_factory = address(new ManagerFactory());
+        address party_factory = address(new PartyFactory());
+        address manager_factory = address(new ManagerFactory());
 
-    //     sudoparty = new SudoPartyHub(party_factory, manager_factory);
+        sudoparty = new SudoPartyHub(party_factory, manager_factory);
+    }
 
-    // }
+    function testSudopartyWhitelist() public {
+        assertEq(nft.ownerOf(id), address(pool));
 
-    // function sudopartyWhitelist() public {
-    //     assertEq(nft.ownerOf(id), address(pool));
+        uint deadline = block.timestamp + 1 days;
 
-    //     uint deadline = block.timestamp + 1 days;
+        address[] memory whitelist = new address[](3);
 
-    //     address[] memory party = new address[](3);
+        whitelist[0] = ryan;
+        whitelist[1] = nich;
+        whitelist[2] = owen;
 
-    //     party[0] = ryan;
-    //     party[1] = nich;
-    //     party[2] = owen;
+        party = sudoparty.startParty(whitelist, deadline, 33, address(factory), address(router), address(pool), address(nft), id);
 
-    //     sudoparty.startParty(party, deadline, 33, address(factory), address(router), address(pool), address(nft), id);
-    // }
+        manager = sudoparty.manager(ISudoParty(party));
+
+        assertEq(ISudoParty(party).id(), 10);
+    }
    
-    // function contribute() public {
-    //     vm.prank(ryan);
-    //     sudoparty.contribute{value: .5 ether}();
-    //     console.log("Ryan contributed .5 ETH");
+    function testContribute() public {
+        testSudopartyWhitelist();
 
-    //     vm.prank(nich);
-    //     sudoparty.contribute{value: 1 ether}();
-    //     console.log("Nich contributed 1 ETH");
+        vm.prank(ryan);
+        sudoparty.contribute{value: .5 ether}(party);
+        assertEq(ISudoParty(party).totalUserContribution(ryan), .5 ether);
 
-    //     vm.prank(owen);
-    //     sudoparty.contribute{value: 1 ether}();
-    //     console.log("Owen contributed 1 ETH");
+        vm.prank(nich);
+        sudoparty.contribute{value: 1 ether}(party);
+        assertEq(ISudoParty(party).totalUserContribution(nich), 1 ether);
 
-    //     vm.expectRevert("NOT_MEMBER");
-    //     vm.prank(sharelove);
-    //     sudoparty.contribute{value: 1 ether}();
-    //     console.log("ShareLove was unable to contribute because they weren't whitelisted");
-    // }
+        vm.prank(owen);
+        sudoparty.contribute{value: 1 ether}(party);
+        assertEq(ISudoParty(party).totalUserContribution(owen), 1 ether);
 
-    // function addAndContribute() public {
-    //     vm.prank(ryan);
-    //     sudoparty.whitelistAdd(sharelove);
-    //     console.log("ShareLove added to List!");
+        vm.expectRevert("NOT_MEMBER");
+        vm.prank(sharelove);
+        sudoparty.contribute{value: 1 ether}(party);
+        assertEq(ISudoParty(party).totalUserContribution(sharelove), 0);
+    }
 
-    //     vm.prank(sharelove);
-    //     sudoparty.contribute{value: 1 ether}();
-    //     console.log("ShareLove contributed 1 eth");
-    // }
+    function testAddAndContribute() public {
+        testContribute();
 
-    // function buy() public {
-    //     vm.prank(ryan);
-    //     sudoparty.buy();
-    // }
+        // ryan adds sharelove to whitelist
+        vm.prank(ryan);
+        sudoparty.whitelistAdd(party, sharelove);
 
-    // function finalize() public {
-    //     sudoparty.finalize();
+        // sharelove contributes
+        vm.prank(sharelove);
+        sudoparty.contribute{value: 1 ether}(party);
+        assertEq(ISudoParty(party).totalUserContribution(sharelove), 1 ether);
+    }
 
-    //     //manager = sudoparty.manager();
-    //     assertTrue(nft.ownerOf(id) == address(manager));
-    //     console.log("NFT Successfully Group Purchased");
-    // }
+    function buy() public {
+        
+    }
+
+    function testBuyAndfinalize() public {
+        testAddAndContribute();
+
+        vm.prank(ryan);
+        sudoparty.buy(party);
+
+        sudoparty.finalize(party);
+
+        //manager = sudoparty.manager();
+        assertTrue(nft.ownerOf(id) == address(manager));
+        console.log("NFT Successfully Group Purchased");
+    }
 
     // function claim() public {
     //     uint _eth;

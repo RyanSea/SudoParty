@@ -16,7 +16,7 @@ contract PartyFactory {
         address pool, 
         address nft, 
         uint id
-    ) public returns (address) {
+    ) public returns (address payable) {
         SudoParty party = new SudoParty(
             name,
             symbol,
@@ -30,6 +30,8 @@ contract PartyFactory {
             id
         );
 
-        return address(party);
+        party.annoint(msg.sender);
+
+        return payable(party);
     }
 }

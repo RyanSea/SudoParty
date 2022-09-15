@@ -10,13 +10,17 @@ interface ISudoParty {
 
     function nft() external view returns (IERC721);
 
+    function id() external view returns (uint);
+
+    function manager() external view returns (address);
+
     function spent() external view returns (uint);
+
+    function totalUserContribution(address) external view returns (uint);
 
     function consensus() external view returns (uint);
 
     function factory() external view returns (ILSSVMPairFactory);
-
-    function id() external view returns (uint);
 
     //======== SudoParty Functions ========//
 

@@ -14,6 +14,6 @@ interface IPartyFactory {
         address pool, 
         address nft, 
         uint id
-    ) external returns (address);
+    ) external returns (address payable);
 
 }

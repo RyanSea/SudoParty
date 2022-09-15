@@ -238,8 +238,6 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
 
             _mint(address(this), spent);
 
-            nft.transferFrom(address(this), address(manager), id);
-
         } else if (block.timestamp >= deadline) {
             status = Status.finalized;
         }
@@ -339,7 +337,7 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     //////////////////////////////////////////////////////////////*/
     
     /// @notice sets SudoParty Manager
-    /// @notice only callable from SudoPartyHub / contract owner
+    /// @dev set by SudoPartyHub at SudoParty creation
     function setManager(address _manager) public ruled {
         manager = _manager;
     }

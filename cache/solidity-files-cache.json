@@ -1279,8 +1279,8 @@
       }
     },
     "src/Factories/ManagerFactory.sol": {
-      "lastModificationDate": 1661933779168,
-      "contentHash": "8271ec8b9abcf15dcdbaae6ba8db6677",
+      "lastModificationDate": 1663281159320,
+      "contentHash": "5cea1b1b76021e8126dfce62c8385278",
       "sourceName": "src/Factories/ManagerFactory.sol",
       "solcConfig": {
         "settings": {
@@ -1323,6 +1323,7 @@
         "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Receiver.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
         "lib/openzeppelin-contracts/contracts/utils/Address.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
@@ -1344,8 +1345,8 @@
       }
     },
     "src/Factories/PartyFactory.sol": {
-      "lastModificationDate": 1661933886146,
-      "contentHash": "e159effc86003cc7e578a2019ef47309",
+      "lastModificationDate": 1663281148888,
+      "contentHash": "7e73c5a291c1f0be7718bce8aac0b6bc",
       "sourceName": "src/Factories/PartyFactory.sol",
       "solcConfig": {
         "settings": {
@@ -1589,8 +1590,8 @@
       }
     },
     "src/Interfaces/IPartyFactory.sol": {
-      "lastModificationDate": 1661933899177,
-      "contentHash": "d45c53f43ba176d2b98fd50a12128abb",
+      "lastModificationDate": 1663281001464,
+      "contentHash": "a930268149275223388ebefc5a90d2fb",
       "sourceName": "src/Interfaces/IPartyFactory.sol",
       "solcConfig": {
         "settings": {
@@ -1627,8 +1628,8 @@
       }
     },
     "src/Interfaces/ISudoParty.sol": {
-      "lastModificationDate": 1661979886553,
-      "contentHash": "6d492bd7be8e557e40e1d0cd345ef69f",
+      "lastModificationDate": 1663282019763,
+      "contentHash": "5c042e798b7e1d07a5fd06db72e3f28c",
       "sourceName": "src/Interfaces/ISudoParty.sol",
       "solcConfig": {
         "settings": {
@@ -1726,8 +1727,8 @@
       }
     },
     "src/SudoParty/SudoParty.sol": {
-      "lastModificationDate": 1662027192210,
-      "contentHash": "7f6734bf57088f4c7612252180bd31c1",
+      "lastModificationDate": 1663282361139,
+      "contentHash": "22068ffeaad6dcbfe5fa281a562e2e0d",
       "sourceName": "src/SudoParty/SudoParty.sol",
       "solcConfig": {
         "settings": {
@@ -1791,8 +1792,8 @@
       }
     },
     "src/SudoParty/SudoPartyManager.sol": {
-      "lastModificationDate": 1662246806470,
-      "contentHash": "b1e967363a49f89e9d58fbb3895df0d0",
+      "lastModificationDate": 1663282189472,
+      "contentHash": "c8c6d83e440df8366c5370a2a586cd48",
       "sourceName": "src/SudoParty/SudoPartyManager.sol",
       "solcConfig": {
         "settings": {
@@ -1835,6 +1836,7 @@
         "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Receiver.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
         "lib/openzeppelin-contracts/contracts/utils/Address.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
@@ -1855,8 +1857,8 @@
       }
     },
     "src/SudoPartyHub.sol": {
-      "lastModificationDate": 1661982519095,
-      "contentHash": "4dec82d49631f8b7ed6e0ded39d51fe3",
+      "lastModificationDate": 1663281724596,
+      "contentHash": "f60e89a49042e64410bbf86aec001543",
       "sourceName": "src/SudoPartyHub.sol",
       "solcConfig": {
         "settings": {
@@ -1920,9 +1922,52 @@
         }
       }
     },
+    "src/SudoPartyTest.sol": {
+      "lastModificationDate": 1663054037274,
+      "contentHash": "cd3cb77b3efe360ece32dd0da7e65496",
+      "sourceName": "src/SudoPartyTest.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
+        "src/Interfaces/ILSSVMPair.sol",
+        "src/Interfaces/ILSSVMRouter.sol"
+      ],
+      "versionRequirement": "^0.8.13",
+      "artifacts": {
+        "SudoPartyTest": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "SudoPartyTest.sol/SudoPartyTest.json"
+        }
+      }
+    },
     "test/SudoParty.t.sol": {
-      "lastModificationDate": 1661981853312,
-      "contentHash": "c0a7699b17664415850c0c721898802b",
+      "lastModificationDate": 1663282127879,
+      "contentHash": "23ba7f4f34164951174a9a06dd98eaaf",
       "sourceName": "test/SudoParty.t.sol",
       "solcConfig": {
         "settings": {
@@ -1999,6 +2044,59 @@
       "artifacts": {
         "SudoPartyTest": {
           "0.8.15+commit.e14f2714.Darwin.appleclang": "SudoParty.t.sol/SudoPartyTest.json"
+        }
+      }
+    },
+    "test/TestParty.t.sol": {
+      "lastModificationDate": 1663054271717,
+      "contentHash": "b828c9f9af207c1e0c9c8e335506cd7c",
+      "sourceName": "test/TestParty.t.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/forge-std/lib/ds-test/src/test.sol",
+        "lib/forge-std/src/Script.sol",
+        "lib/forge-std/src/Test.sol",
+        "lib/forge-std/src/Vm.sol",
+        "lib/forge-std/src/console.sol",
+        "lib/forge-std/src/console2.sol",
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "src/Interfaces/ILSSVMPair.sol",
+        "src/Interfaces/ILSSVMRouter.sol",
+        "src/SudoPartyTest.sol",
+        "test/utils/Utils.sol"
+      ],
+      "versionRequirement": "^0.8.13",
+      "artifacts": {
+        "TestParty": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "TestParty.t.sol/TestParty.json"
         }
       }
     },
