@@ -67,7 +67,7 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
 
     enum ProposalType {
         sell,
-        set_consensus,
+        set_quorum,
         withdraw
     }
 
@@ -75,7 +75,7 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
         ProposalType proposalType;
         bool passed;
         bool finalized;
-        uint priceOrConsensus;
+        uint priceOrQuorum;
         uint deadline;
         uint yes;
         uint no;
@@ -167,7 +167,7 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
     /// @notice creates proposal
     /// @param sender user calling SudoPartyHub function
     /// @param _type proposal type
-    /// @param _amount relisting price or new consensus
+    /// @param _amount relisting price or new quorum
     function createProposal(
         address sender,
         ProposalType _type, 
@@ -176,15 +176,15 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
     ) public ruled onlyStaked(sender) {
         proposal_id++;
 
-        // ensure arg <= 100 if ProposalType == set_consensus
-        uint price_or_consensus = _type == ProposalType.set_consensus && _amount > 100 ? 100 : _amount;
+        // ensure arg <= 100 if ProposalType == set_quorum
+        uint price_or_quorum = _type == ProposalType.set_quorum && _amount > 100 ? 100 : _amount;
 
         activeProposals.add(proposal_id);
 
         Proposal memory _proposal;
 
         _proposal.proposalType = _type;
-        _proposal.priceOrConsensus = price_or_consensus;
+        _proposal.priceOrQuorum = price_or_quorum;
         _proposal.deadline = block.timestamp + 1 days;
         _proposal.withdrawal = _withdrawal;
 
@@ -234,11 +234,11 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
 
         uint no = _proposal.no;
 
-        uint _consensus = token.totalSupply() * consensus;
+        uint _quorum = token.totalSupply() * quorum;
 
         if (_proposal.passed = yes >= no) {
-            // multiply yes votes by same multipler to get consensus to whole number
-            require(yes * 100 >= _consensus, "CONSENSUS_UNMET");
+            // multiply yes votes by same multipler to get quorum to whole number
+            require(yes * 100 >= _quorum, "QUORUM_UNMET");
 
             finalized[_id] = true;
 
@@ -291,8 +291,8 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
 
         if (_type == ProposalType.sell) {
            handleRelist(_proposal);
-        } else if (_type == ProposalType.set_consensus) {
-            handleNewConsensus(_proposal);
+        } else if (_type == ProposalType.set_quorum) {
+            handleNewQuorum(_proposal);
 
         } else if(_type == ProposalType.withdraw) {
             address _withdrawal;
@@ -303,7 +303,7 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
 
     /// @notice relists nft on sudoswap & sets listing address
     function handleRelist(Proposal memory _proposal) private {
-        uint128 _price = uint128(_proposal.priceOrConsensus);
+        uint128 _price = uint128(_proposal.priceOrQuorum);
 
         // set & init ids array
         uint[] memory _ids = new uint[](1);
@@ -323,9 +323,9 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
         ));
     }
 
-    /// @notice changes consensus
-    function handleNewConsensus(Proposal memory _proposal) private {
-        consensus = _proposal.priceOrConsensus;
+    /// @notice changes quorum
+    function handleNewQuorum(Proposal memory _proposal) private {
+        quorum = _proposal.priceOrQuorum;
     }
 
     /// @notice withdraws to proposal's withdrawal address

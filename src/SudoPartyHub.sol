@@ -51,48 +51,48 @@ contract SudoPartyHub {
         uint quorum,
         address factory,
         address router,
-        ILSSVMRouter.PairSwapSpecifc[] memory pairList
-    ){
+        ILSSVMRouter.PairSwapSpecific[] memory pairList
+    ) public {
 
     }
 
-    function startParty(
-        string memory name,
-        string memory symbol,
-        address[] memory whitelist,
-        uint deadline,
-        uint quorum,
-        address factory,
-        address router,
-        address pool, 
-        address nft, 
-        uint id
-    ) public returns (address payable _party) {
-        IERC721 _nft = IERC721(nft);
+    // function startParty(
+    //     string memory name,
+    //     string memory symbol,
+    //     address[] memory whitelist,
+    //     uint deadline,
+    //     uint quorum,
+    //     address factory,
+    //     address router,
+    //     address pool, 
+    //     address nft, 
+    //     uint id
+    // ) public returns (address payable _party) {
+    //     IERC721 _nft = IERC721(nft);
 
-        require(_nft.ownerOf(id) == pool, "NOT_LISTED");
+    //     require(_nft.ownerOf(id) == pool, "NOT_LISTED");
 
-        _party = party_factory.createParty(
-            name,
-            symbol,
-            whitelist, 
-            deadline, 
-            quorum, 
-            factory, 
-            router, 
-            pool, 
-            nft, 
-            id
-        );
+    //     _party = party_factory.createParty(
+    //         name,
+    //         symbol,
+    //         whitelist, 
+    //         deadline, 
+    //         quorum, 
+    //         factory, 
+    //         router, 
+    //         pool, 
+    //         nft, 
+    //         id
+    //     );
 
-        ISudoParty sudoparty = ISudoParty(_party);
+    //     ISudoParty sudoparty = ISudoParty(_party);
 
-        address _manager = manager_factory.createManager(name, symbol, _party);
+    //     address _manager = manager_factory.createManager(name, symbol, _party);
 
-        manager[sudoparty] = ISudoPartyManager(_manager);
+    //     manager[sudoparty] = ISudoPartyManager(_manager);
 
-        sudoparty.setManager(_manager);
-    }
+    //     sudoparty.setManager(_manager);
+    // }
 
     // /// @notice creates fractional token name and symbol
     // function tokenName(IERC721 nft, uint id) public view returns (string memory name, string memory symbol) {

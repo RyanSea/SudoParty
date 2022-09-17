@@ -20,7 +20,7 @@ import "Monarchy/";
 /// @author Autocrat (Ryan)
 /// @notice buys and fractionalizes nft's from Sudoswap
 /// @author modified from PartyBid
-contract SudoParty is ERC20, IERC721Receiver, Monarchy {
+abstract contract SudoParty is ERC20, IERC721Receiver, Monarchy {
 
     /*///////////////////////////////////////////////////////////////
                             INITIALIZATION
@@ -30,19 +30,19 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     mapping (address => bool) public whitelisted;
 
     /// @notice deadline for SudoParty to complete purchase
-    uint public immutable deadline;
+    uint public deadline;
 
-    /// @notice 0 - 100 (%)| consensus needed to pass a yes vote
-    uint public immutable quorum;
+    /// @notice 0 - 100 (%)| quorum needed to pass a yes vote
+    uint public quorum;
 
     /// @notice Sudoswap factory
-    ILSSVMPairFactory public immutable factory;
+    ILSSVMPairFactory public factory;
 
     /// @notice Sudoswap router
-    ILSSVMRouter public immutable router;
+    ILSSVMRouter public router;
 
     /// @notice Sudoswap pool to buy from
-    ILSSVMPair public immutable pool;
+    ILSSVMPair public pool;
 
     /// @notice target nft
     /// @dev added name() and symbol() to the interface
@@ -56,6 +56,9 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
 
     /// @notice SudoParty Manager
     address public manager;
+
+    /// @notice successful purchase
+    bool public success;
 
     // constructor(
     //     string memory _name,
@@ -229,9 +232,7 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     function finalize() public {
         require(status == Status.active, "PARTY_FINALIZED");
 
-        bool successful = nft.ownerOf(id) == manager;
-
-        if (successful) {
+        if (success) {
             status = Status.finalized;
 
             spent = partybank - address(this).balance;
@@ -242,7 +243,7 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
             status = Status.finalized;
         }
 
-        if(status == Status.finalized) emit Finalized(successful);
+        if(status == Status.finalized) emit Finalized(success);
     }
 
     /// @notice returns user's claimable assets if party is finaized
@@ -319,18 +320,18 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     //////////////////////////////////////////////////////////////*/
     
     /// @notice return true if pool holds nft id
-    function isListed() public view returns (bool listed) {
-        listed = nft.ownerOf(id) == address(pool);
-    }
+    // function isListed() public view returns (bool listed) {
+    //     listed = nft.ownerOf(id) == address(pool);
+    // }
 
     /// @notice sets price to current spot price and returns price
-    function getPrice() public returns (uint) {
-        require(isListed(), "NOT_LISTED");
+    // function getPrice() public returns (uint) {
+    //     require(isListed(), "NOT_LISTED");
 
-        (, uint newSpotPrice,,,) = pool.getBuyNFTQuote(1);
+    //     (, uint newSpotPrice,,,) = pool.getBuyNFTQuote(1);
 
-        return price = newSpotPrice;
-    }
+    //     return price = newSpotPrice;
+    // }
 
     /*///////////////////////////////////////////////////////////////
                               PARTY MANAGER                                                   
@@ -358,7 +359,7 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     }
 
     /// @notice sets party permissions at SudoParty construction
-    function setWhitelist(address[] memory _whitelist) private {
+    function setWhitelist(address[] memory _whitelist) internal {
         uint length = _whitelist.length;
 
         open = length == 0 ? true : false;

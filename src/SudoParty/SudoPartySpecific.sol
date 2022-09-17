@@ -9,21 +9,21 @@ contract SudoPartySpecific is SudoParty {
     ILSSVMRouter.PairSwapSpecific[] public pairList;
 
     constructor(
-        string calldata _name,
-        string calldata _symbol,
+        string memory _name,
+        string memory _symbol,
         address[] memory whitelist,
         uint _deadline,
         uint _quorum,
         address _factory,
         address _router,
-        ILSSVMRouter.PairSwapSpecifc[] memory _pairList
+        ILSSVMRouter.PairSwapSpecific[] memory _pairList
     ) ERC20( _name, _symbol, 18) {
         setWhitelist(whitelist);
 
         deadline = _deadline;
         quorum = _quorum;
-        factory = _factory;
-        router = _router;
+        factory = ILSSVMPairFactory(_factory);
+        router = ILSSVMRouter(_router);
 
         uint length = _pairList.length;
 
@@ -43,18 +43,20 @@ contract SudoPartySpecific is SudoParty {
             block.timestamp + 240 // swap deadline
         );
 
+        success = true;
+
         emit PartyWon(spent, unspent);
     }
 
     /// @notice compares held ids from pool & adjusts ids from corresponding PairSwapSpecific instance
     function updatePairList() public {
-        ILSSVMRouter.PairSwapSpecific swap;
+        ILSSVMRouter.PairSwapSpecific memory swap;
 
-        uint[] poolIds;
+        uint[] memory poolIds;
 
-        uint[] nftIds;
+        uint[] memory nftIds;
 
-        uint[] ids;
+        uint[] memory ids;
 
         uint amount;
 
@@ -80,7 +82,7 @@ contract SudoPartySpecific is SudoParty {
 
             // iterate through nftIds and if true push to final ids array
             for (_i = 0; i < amount; ++i) {
-                if (exists[nftIds[_i]]) ids.push(nftIds[_i]);
+                if (exists[nftIds[_i]]) ids[i] = nftIds[_i];
             }
 
             amount = poolIds.length;

@@ -1,19 +1,20 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+import "./ILSSVMRouter.sol";
+
 interface IPartyFactory {
 
     function createParty(
         string memory name,
-        string memory symbol,
+        string memory _name,
+        string memory _symbol,
         address[] memory whitelist,
-        uint deadline,
-        uint quorum,
-        address factory,
-        address router,
-        address pool, 
-        address nft, 
-        uint id
+        uint _deadline,
+        uint _quorum,
+        address _factory,
+        address _router,
+        ILSSVMRouter.PairSwapAny[] memory _pairList
     ) external returns (address payable);
 
 }
