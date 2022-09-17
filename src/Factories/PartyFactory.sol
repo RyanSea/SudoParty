@@ -10,7 +10,7 @@ contract PartyFactory {
         string memory symbol,
         address[] memory whitelist,
         uint deadline,
-        uint consensus,
+        uint quorum,
         address factory,
         address router,
         address pool, 

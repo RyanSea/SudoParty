@@ -9,6 +9,8 @@ import "src/SudoPartyTest.sol";
 
 import "openzeppelin/token/ERC721/IERC721.sol";
 
+// forge test --match-contract TestParty --rpc-url $RINKEBY_RPC_URL --chain-id 4  -vvv
+
 contract TestParty is Test {
     SudoPartyTest public test;
 

@@ -1,6 +1,8 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
+import "./Interfaces/ILSSVMRouter.sol";
+
 import "./Interfaces/ISudoParty.sol";
 import "./Interfaces/ISudoPartyManager.sol";
 
@@ -41,14 +43,25 @@ contract SudoPartyHub {
     // [ [address,[4]], [address, [1]] ]
     // [ [address, [6,10,500]], [address,[900,29]] ]
 
-    // function startPartySpecific(
-
-    // ){}
-
-    function startParty(
+    function startPartySpecific(
+        string calldata name,
+        string calldata symbol,
         address[] memory whitelist,
         uint deadline,
-        uint consensus,
+        uint quorum,
+        address factory,
+        address router,
+        ILSSVMRouter.PairSwapSpecifc[] memory pairList
+    ){
+
+    }
+
+    function startParty(
+        string memory name,
+        string memory symbol,
+        address[] memory whitelist,
+        uint deadline,
+        uint quorum,
         address factory,
         address router,
         address pool, 
@@ -59,14 +72,12 @@ contract SudoPartyHub {
 
         require(_nft.ownerOf(id) == pool, "NOT_LISTED");
 
-        (string memory name, string memory symbol) = tokenName(_nft, id);
-
         _party = party_factory.createParty(
             name,
             symbol,
             whitelist, 
             deadline, 
-            consensus, 
+            quorum, 
             factory, 
             router, 
             pool, 
@@ -83,14 +94,14 @@ contract SudoPartyHub {
         sudoparty.setManager(_manager);
     }
 
-    /// @notice creates fractional token name and symbol
-    function tokenName(IERC721 nft, uint id) public view returns (string memory name, string memory symbol) {
-        // e.g. CRYPTOPUNKS#6529 Fraction
-        name = string(abi.encodePacked(IERC721(nft).name(), "#",Strings.toString(id), " Fraction"));
+    // /// @notice creates fractional token name and symbol
+    // function tokenName(IERC721 nft, uint id) public view returns (string memory name, string memory symbol) {
+    //     // e.g. CRYPTOPUNKS#6529 Fraction
+    //     name = string(abi.encodePacked(IERC721(nft).name(), "#",Strings.toString(id), " Fraction"));
 
-        // e.g. Ͼ#6529
-        symbol = string(abi.encode(IERC721(nft).symbol(), "#",Strings.toString(id)));
-    }
+    //     // e.g. Ͼ#6529
+    //     symbol = string(abi.encode(IERC721(nft).symbol(), "#",Strings.toString(id)));
+    // }
 
     /*///////////////////////////////////////////////////////////////
                               SUDOPARTY FUNCTIONS

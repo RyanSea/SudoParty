@@ -18,7 +18,7 @@ interface ISudoParty {
 
     function totalUserContribution(address) external view returns (uint);
 
-    function consensus() external view returns (uint);
+    function quorum() external view returns (uint);
 
     function factory() external view returns (ILSSVMPairFactory);
 

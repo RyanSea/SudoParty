@@ -38,7 +38,7 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
     ICurve public immutable linearCurve;
 
     /// @notice 0 - 100% | tokens needed to complete a vote
-    uint public consensus;
+    uint public quorum;
     
     constructor(
         string memory _name, 
@@ -53,7 +53,7 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
 
         nft = token.nft();
         id = token.id();
-        consensus = token.consensus();
+        quorum = token.quorum();
         factory = token.factory();
 
         // rinkeby linear curve

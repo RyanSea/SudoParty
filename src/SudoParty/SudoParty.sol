@@ -33,7 +33,7 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     uint public immutable deadline;
 
     /// @notice 0 - 100 (%)| consensus needed to pass a yes vote
-    uint public immutable consensus;
+    uint public immutable quorum;
 
     /// @notice Sudoswap factory
     ILSSVMPairFactory public immutable factory;
@@ -46,10 +46,10 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
 
     /// @notice target nft
     /// @dev added name() and symbol() to the interface
-    IERC721 public immutable nft;
+    //IERC721 public immutable nft;
 
     /// @notice target nft id
-    uint public immutable id;
+    //uint public immutable id;
 
     /// @notice if party is open to any contributors
     bool public open;
@@ -57,35 +57,35 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     /// @notice SudoParty Manager
     address public manager;
 
-    constructor(
-        string memory _name,
-        string memory _symbol,
-        address[] memory whitelist,
-        uint _deadline,
-        uint _consensus,
-        address _factory,
-        address _router,
-        address _pool, 
-        address _nft, 
-        uint _id
-    ) ERC20(
-        _name,
-        _symbol,
-        18
-    ) {
-        // ensure consensus <= 100
-        consensus = _consensus >= 100 ? 100 : _consensus;
+    // constructor(
+    //     string memory _name,
+    //     string memory _symbol,
+    //     address[] memory whitelist,
+    //     uint _deadline,
+    //     uint _consensus,
+    //     address _factory,
+    //     address _router,
+    //     address _pool, 
+    //     address _nft, 
+    //     uint _id
+    // ) ERC20(
+    //     _name,
+    //     _symbol,
+    //     18
+    // ) {
+    //     // ensure consensus <= 100
+    //     consensus = _consensus >= 100 ? 100 : _consensus;
         
-        deadline = _deadline;
-        factory = ILSSVMPairFactory(_factory);
-        router = ILSSVMRouter(_router);
-        pool = ILSSVMPair(_pool);
-        nft = IERC721(_nft);
-        id = _id;
+    //     deadline = _deadline;
+    //     factory = ILSSVMPairFactory(_factory);
+    //     router = ILSSVMRouter(_router);
+    //     pool = ILSSVMPair(_pool);
+    //     nft = IERC721(_nft);
+    //     id = _id;
 
-        // set whitelist if any
-        setWhitelist(whitelist);
-    }
+    //     // set whitelist if any
+    //     setWhitelist(whitelist);
+    // }
 
     enum Status { 
         active, 
@@ -192,37 +192,37 @@ contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     /// @notice sudoswap returns unused eth to contract
     /// @dev may need re-entrancy guard for buying non-specific nft's
     /// note might add a _deadline param for Sudoswap's deadline arg
-    function buy() public {
-        require(status == Status.active, "PARTY_CLOSED");
+    // function buy() public {
+    //     require(status == Status.active, "PARTY_CLOSED");
 
-        // initialize PairSwapSpecifc
-        ILSSVMRouter.PairSwapSpecific memory swap;
+    //     // initialize PairSwapSpecifc
+    //     ILSSVMRouter.PairSwapSpecific memory swap;
 
-        swap.pair = pool;
-        swap.nftIds = new uint[](1);
-        swap.nftIds[0] = id;
+    //     swap.pair = pool;
+    //     swap.nftIds = new uint[](1);
+    //     swap.nftIds[0] = id;
 
-        // initialize PairSwapSpecifc[] which is a param for buying nft's by id
-        ILSSVMRouter.PairSwapSpecific[] memory pairList = new ILSSVMRouter.PairSwapSpecific[](1);
+    //     // initialize PairSwapSpecifc[] which is a param for buying nft's by id
+    //     ILSSVMRouter.PairSwapSpecific[] memory pairList = new ILSSVMRouter.PairSwapSpecific[](1);
 
-        pairList[0] = swap;
+    //     pairList[0] = swap;
 
-        // update price | note: unsued | todo: fix getPrice()
-        //getPrice();
+    //     // update price | note: unsued | todo: fix getPrice()
+    //     //getPrice();
 
-        // using assert to keep the uptaded price to state
-        assert(partybank >= price);
+    //     // using assert to keep the uptaded price to state
+    //     assert(partybank >= price);
 
-        // temp partybank value arg should be replaced with a correct price variable from getPrice();
-        uint unspent = router.swapETHForSpecificNFTs {value: partybank} (
-            pairList, 
-            payable(address(this)), 
-            manager, 
-            block.timestamp + 240 // swap deadline
-        );
+    //     // temp partybank value arg should be replaced with a correct price variable from getPrice();
+    //     uint unspent = router.swapETHForSpecificNFTs {value: partybank} (
+    //         pairList, 
+    //         payable(address(this)), 
+    //         manager, 
+    //         block.timestamp + 240 // swap deadline
+    //     );
 
-        emit PartyWon(spent, unspent);
-    }
+    //     emit PartyWon(spent, unspent);
+    // }
 
     /// @notice mints tokens & creates SudoPartyManager if purchase succeeded
     /// @notice finalizes party if purchase succeeded or deadline passed

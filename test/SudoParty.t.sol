@@ -98,7 +98,7 @@ contract SudoPartyTest is Test {
         whitelist[1] = nich;
         whitelist[2] = owen;
 
-        party = sudoparty.startParty(whitelist, deadline, 33, address(factory), address(router), address(pool), address(nft), id);
+        party = sudoparty.startParty("NFT Collection 1", "COLLECTION-1", whitelist, deadline, 33, address(factory), address(router), address(pool), address(nft), id);
 
         manager = sudoparty.manager(ISudoParty(party));
 

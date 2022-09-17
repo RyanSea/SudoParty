@@ -11,6 +11,8 @@ interface ILSSVMPair {
         TRADE
     }
 
+    function getAllHeldIds() external view returns (uint256[] memory);
+
     function swapTokenForSpecificNFTs(
         uint256[] calldata nftIds,
         uint256 maxExpectedTokenInput,
