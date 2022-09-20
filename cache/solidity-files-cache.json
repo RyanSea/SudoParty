@@ -11,44 +11,6 @@
     ]
   },
   "files": {
-    "lib/forge-std/lib/ds-test/src/test.sol": {
-      "lastModificationDate": 1660891169219,
-      "contentHash": "962996f0e05d5218857a538a62d7c47e",
-      "sourceName": "lib/forge-std/lib/ds-test/src/test.sol",
-      "solcConfig": {
-        "settings": {
-          "optimizer": {
-            "enabled": true,
-            "runs": 200
-          },
-          "metadata": {
-            "bytecodeHash": "ipfs"
-          },
-          "outputSelection": {
-            "*": {
-              "": [
-                "ast"
-              ],
-              "*": [
-                "abi",
-                "evm.bytecode",
-                "evm.deployedBytecode",
-                "evm.methodIdentifiers"
-              ]
-            }
-          },
-          "evmVersion": "london",
-          "libraries": {}
-        }
-      },
-      "imports": [],
-      "versionRequirement": ">=0.5.0",
-      "artifacts": {
-        "DSTest": {
-          "0.8.15+commit.e14f2714.Darwin.appleclang": "test.sol/DSTest.json"
-        }
-      }
-    },
     "lib/forge-std/src/Script.sol": {
       "lastModificationDate": 1660891168453,
       "contentHash": "b313d0193442f5a12848be9c422a0064",
@@ -122,11 +84,11 @@
         }
       },
       "imports": [
-        "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Script.sol",
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol"
+        "lib/forge-std/src/console2.sol",
+        "lib/solmate/lib/ds-test/src/test.sol"
       ],
       "versionRequirement": ">=0.6.0, <0.9.0",
       "artifacts": {
@@ -1162,6 +1124,44 @@
         }
       }
     },
+    "lib/solmate/lib/ds-test/src/test.sol": {
+      "lastModificationDate": 1660937284676,
+      "contentHash": "962996f0e05d5218857a538a62d7c47e",
+      "sourceName": "lib/solmate/lib/ds-test/src/test.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [],
+      "versionRequirement": ">=0.5.0",
+      "artifacts": {
+        "DSTest": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "test.sol/DSTest.json"
+        }
+      }
+    },
     "lib/solmate/src/tokens/ERC20.sol": {
       "lastModificationDate": 1660937283909,
       "contentHash": "0c7c7ada139062536af09d69d96d395c",
@@ -1344,10 +1344,10 @@
         }
       }
     },
-    "src/Factories/PartyFactory.sol": {
-      "lastModificationDate": 1663281148888,
-      "contentHash": "7e73c5a291c1f0be7718bce8aac0b6bc",
-      "sourceName": "src/Factories/PartyFactory.sol",
+    "src/Factories/PairFactorySpecific.sol": {
+      "lastModificationDate": 1663704844892,
+      "contentHash": "ff017cc5ebab7f1cb0e7d1e102f83998",
+      "sourceName": "src/Factories/PairFactorySpecific.sol",
       "solcConfig": {
         "settings": {
           "optimizer": {
@@ -1401,18 +1401,86 @@
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/ILSSVMRouter.sol",
         "src/Interfaces/ISudoPartyManager.sol",
-        "src/SudoParty/SudoParty.sol"
+        "src/SudoParty/SudoParty.sol",
+        "src/SudoParty/SudoPartySpecific.sol"
       ],
       "versionRequirement": "^0.8.13",
       "artifacts": {
-        "PartyFactory": {
-          "0.8.15+commit.e14f2714.Darwin.appleclang": "PartyFactory.sol/PartyFactory.json"
+        "PairFactorySpecific": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "PairFactorySpecific.sol/PairFactorySpecific.json"
+        }
+      }
+    },
+    "src/Factories/PartyFactoryAny.sol": {
+      "lastModificationDate": 1663704614407,
+      "contentHash": "4b3b350d85d64f85d0c1e1b27f1ec7ec",
+      "sourceName": "src/Factories/PartyFactoryAny.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
+        "lib/lssvm/src/LSSVMPair.sol",
+        "lib/lssvm/src/LSSVMPairETH.sol",
+        "lib/lssvm/src/LSSVMRouter.sol",
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/lssvm/src/bonding-curves/ICurve.sol",
+        "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
+        "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
+        "src/Interfaces/ILSSVMPair.sol",
+        "src/Interfaces/ILSSVMPairFactory.sol",
+        "src/Interfaces/ILSSVMRouter.sol",
+        "src/Interfaces/ISudoPartyManager.sol",
+        "src/SudoParty/SudoParty.sol",
+        "src/SudoParty/SudoPartyAny.sol"
+      ],
+      "versionRequirement": "^0.8.13",
+      "artifacts": {
+        "PartyFactoryAny": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "PartyFactoryAny.sol/PartyFactoryAny.json"
         }
       }
     },
     "src/Interfaces/ILSSVMPair.sol": {
-      "lastModificationDate": 1661903564399,
-      "contentHash": "0c213f0e6ead270d755d00d196bad923",
+      "lastModificationDate": 1663641699391,
+      "contentHash": "b799b828db8951cb2c78036798341f5a",
       "sourceName": "src/Interfaces/ILSSVMPair.sol",
       "solcConfig": {
         "settings": {
@@ -1441,7 +1509,9 @@
         }
       },
       "imports": [
-        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol"
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol"
       ],
       "versionRequirement": "^0.8.13",
       "artifacts": {
@@ -1451,7 +1521,7 @@
       }
     },
     "src/Interfaces/ILSSVMPairFactory.sol": {
-      "lastModificationDate": 1661936586604,
+      "lastModificationDate": 1661936609283,
       "contentHash": "7f3f93f3a964f87f27b14f08ec308d0b",
       "sourceName": "src/Interfaces/ILSSVMPairFactory.sol",
       "solcConfig": {
@@ -1542,6 +1612,8 @@
       },
       "imports": [
         "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "src/Interfaces/ILSSVMPair.sol"
       ],
       "versionRequirement": "^0.8.13",
@@ -1590,8 +1662,8 @@
       }
     },
     "src/Interfaces/IPartyFactory.sol": {
-      "lastModificationDate": 1663281001464,
-      "contentHash": "a930268149275223388ebefc5a90d2fb",
+      "lastModificationDate": 1663705920184,
+      "contentHash": "6180aec84a73e1e8a4a2085106a05bb0",
       "sourceName": "src/Interfaces/IPartyFactory.sol",
       "solcConfig": {
         "settings": {
@@ -1619,7 +1691,13 @@
           "libraries": {}
         }
       },
-      "imports": [],
+      "imports": [
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "src/Interfaces/ILSSVMPair.sol",
+        "src/Interfaces/ILSSVMRouter.sol"
+      ],
       "versionRequirement": "^0.8.13",
       "artifacts": {
         "IPartyFactory": {
@@ -1628,8 +1706,8 @@
       }
     },
     "src/Interfaces/ISudoParty.sol": {
-      "lastModificationDate": 1663282019763,
-      "contentHash": "5c042e798b7e1d07a5fd06db72e3f28c",
+      "lastModificationDate": 1663381403248,
+      "contentHash": "4aceb59f24d014040659afd13a7a0698",
       "sourceName": "src/Interfaces/ISudoParty.sol",
       "solcConfig": {
         "settings": {
@@ -1727,8 +1805,8 @@
       }
     },
     "src/SudoParty/SudoParty.sol": {
-      "lastModificationDate": 1663282361139,
-      "contentHash": "22068ffeaad6dcbfe5fa281a562e2e0d",
+      "lastModificationDate": 1663446675570,
+      "contentHash": "97e17d6cc506fab7d510a5682f93da72",
       "sourceName": "src/SudoParty/SudoParty.sol",
       "solcConfig": {
         "settings": {
@@ -1791,9 +1869,75 @@
         }
       }
     },
+    "src/SudoParty/SudoPartyAny.sol": {
+      "lastModificationDate": 1663703550806,
+      "contentHash": "a41f171c3357ef3284226e65c12fcf6f",
+      "sourceName": "src/SudoParty/SudoPartyAny.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
+        "lib/lssvm/src/LSSVMPair.sol",
+        "lib/lssvm/src/LSSVMPairETH.sol",
+        "lib/lssvm/src/LSSVMRouter.sol",
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/lssvm/src/bonding-curves/ICurve.sol",
+        "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
+        "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
+        "src/Interfaces/ILSSVMPair.sol",
+        "src/Interfaces/ILSSVMPairFactory.sol",
+        "src/Interfaces/ILSSVMRouter.sol",
+        "src/Interfaces/ISudoPartyManager.sol",
+        "src/SudoParty/SudoParty.sol"
+      ],
+      "versionRequirement": "^0.8.13",
+      "artifacts": {
+        "SudoPartyAny": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "SudoPartyAny.sol/SudoPartyAny.json"
+        }
+      }
+    },
     "src/SudoParty/SudoPartyManager.sol": {
-      "lastModificationDate": 1663282189472,
-      "contentHash": "c8c6d83e440df8366c5370a2a586cd48",
+      "lastModificationDate": 1663444832413,
+      "contentHash": "13418d876bd05d0f8161b933303172bf",
       "sourceName": "src/SudoParty/SudoPartyManager.sol",
       "solcConfig": {
         "settings": {
@@ -1856,9 +2000,75 @@
         }
       }
     },
+    "src/SudoParty/SudoPartySpecific.sol": {
+      "lastModificationDate": 1663703634661,
+      "contentHash": "93d88124bb2071d0498175ae54c6fdfe",
+      "sourceName": "src/SudoParty/SudoPartySpecific.sol",
+      "solcConfig": {
+        "settings": {
+          "optimizer": {
+            "enabled": true,
+            "runs": 200
+          },
+          "metadata": {
+            "bytecodeHash": "ipfs"
+          },
+          "outputSelection": {
+            "*": {
+              "": [
+                "ast"
+              ],
+              "*": [
+                "abi",
+                "evm.bytecode",
+                "evm.deployedBytecode",
+                "evm.methodIdentifiers"
+              ]
+            }
+          },
+          "evmVersion": "london",
+          "libraries": {}
+        }
+      },
+      "imports": [
+        "lib/lssvm/src/ILSSVMPairFactoryLike.sol",
+        "lib/lssvm/src/LSSVMPair.sol",
+        "lib/lssvm/src/LSSVMPairETH.sol",
+        "lib/lssvm/src/LSSVMRouter.sol",
+        "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/lssvm/src/bonding-curves/ICurve.sol",
+        "lib/lssvm/src/lib/IOwnershipTransferCallback.sol",
+        "lib/lssvm/src/lib/OwnableWithTransferCallback.sol",
+        "lib/lssvm/src/lib/ReentrancyGuard.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/IERC1155Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Holder.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC1155/utils/ERC1155Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/utils/Address.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/solmate/src/tokens/ERC20.sol",
+        "lib/solmate/src/utils/SafeTransferLib.sol",
+        "src/Auth/Monarchy.sol",
+        "src/Interfaces/ILSSVMPair.sol",
+        "src/Interfaces/ILSSVMPairFactory.sol",
+        "src/Interfaces/ILSSVMRouter.sol",
+        "src/Interfaces/ISudoPartyManager.sol",
+        "src/SudoParty/SudoParty.sol"
+      ],
+      "versionRequirement": "^0.8.13",
+      "artifacts": {
+        "SudoPartySpecific": {
+          "0.8.15+commit.e14f2714.Darwin.appleclang": "SudoPartySpecific.sol/SudoPartySpecific.json"
+        }
+      }
+    },
     "src/SudoPartyHub.sol": {
-      "lastModificationDate": 1663281724596,
-      "contentHash": "f60e89a49042e64410bbf86aec001543",
+      "lastModificationDate": 1663446395359,
+      "contentHash": "d74473915f973ebba3c68330933c80ad",
       "sourceName": "src/SudoPartyHub.sol",
       "solcConfig": {
         "settings": {
@@ -1910,6 +2120,7 @@
         "lib/solmate/src/utils/SafeTransferLib.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
+        "src/Interfaces/ILSSVMRouter.sol",
         "src/Interfaces/IManagerFactory.sol",
         "src/Interfaces/IPartyFactory.sol",
         "src/Interfaces/ISudoParty.sol",
@@ -1923,8 +2134,8 @@
       }
     },
     "src/SudoPartyTest.sol": {
-      "lastModificationDate": 1663054037274,
-      "contentHash": "cd3cb77b3efe360ece32dd0da7e65496",
+      "lastModificationDate": 1663374575125,
+      "contentHash": "a3c23b5ec992f2fd7015db1ff70b130c",
       "sourceName": "src/SudoPartyTest.sol",
       "solcConfig": {
         "settings": {
@@ -1954,7 +2165,9 @@
       },
       "imports": [
         "lib/lssvm/src/bonding-curves/CurveErrorCodes.sol",
+        "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
+        "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMRouter.sol"
       ],
@@ -1966,8 +2179,8 @@
       }
     },
     "test/SudoParty.t.sol": {
-      "lastModificationDate": 1663282127879,
-      "contentHash": "23ba7f4f34164951174a9a06dd98eaaf",
+      "lastModificationDate": 1663706369946,
+      "contentHash": "e278ee1cd72a6ae2502c566ce7c05fc9",
       "sourceName": "test/SudoParty.t.sol",
       "solcConfig": {
         "settings": {
@@ -1996,7 +2209,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Script.sol",
         "lib/forge-std/src/Test.sol",
         "lib/forge-std/src/Vm.sol",
@@ -2023,11 +2235,12 @@
         "lib/openzeppelin-contracts/contracts/utils/introspection/ERC165Checker.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
         "lib/openzeppelin-contracts/contracts/utils/structs/EnumerableSet.sol",
+        "lib/solmate/lib/ds-test/src/test.sol",
         "lib/solmate/src/tokens/ERC20.sol",
         "lib/solmate/src/utils/SafeTransferLib.sol",
         "src/Auth/Monarchy.sol",
         "src/Factories/ManagerFactory.sol",
-        "src/Factories/PartyFactory.sol",
+        "src/Factories/PartyFactoryAny.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMPairFactory.sol",
         "src/Interfaces/ILSSVMRouter.sol",
@@ -2036,6 +2249,7 @@
         "src/Interfaces/ISudoParty.sol",
         "src/Interfaces/ISudoPartyManager.sol",
         "src/SudoParty/SudoParty.sol",
+        "src/SudoParty/SudoPartyAny.sol",
         "src/SudoParty/SudoPartyManager.sol",
         "src/SudoPartyHub.sol",
         "test/utils/Utils.sol"
@@ -2048,8 +2262,8 @@
       }
     },
     "test/TestParty.t.sol": {
-      "lastModificationDate": 1663054271717,
-      "contentHash": "b828c9f9af207c1e0c9c8e335506cd7c",
+      "lastModificationDate": 1663359883707,
+      "contentHash": "eae2dbed520d2bc579b73d90aa624131",
       "sourceName": "test/TestParty.t.sol",
       "solcConfig": {
         "settings": {
@@ -2078,7 +2292,6 @@
         }
       },
       "imports": [
-        "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Script.sol",
         "lib/forge-std/src/Test.sol",
         "lib/forge-std/src/Vm.sol",
@@ -2088,6 +2301,7 @@
         "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721.sol",
         "lib/openzeppelin-contracts/contracts/token/ERC721/IERC721Receiver.sol",
         "lib/openzeppelin-contracts/contracts/utils/introspection/IERC165.sol",
+        "lib/solmate/lib/ds-test/src/test.sol",
         "src/Interfaces/ILSSVMPair.sol",
         "src/Interfaces/ILSSVMRouter.sol",
         "src/SudoPartyTest.sol",
@@ -2131,12 +2345,12 @@
         }
       },
       "imports": [
-        "lib/forge-std/lib/ds-test/src/test.sol",
         "lib/forge-std/src/Script.sol",
         "lib/forge-std/src/Test.sol",
         "lib/forge-std/src/Vm.sol",
         "lib/forge-std/src/console.sol",
-        "lib/forge-std/src/console2.sol"
+        "lib/forge-std/src/console2.sol",
+        "lib/solmate/lib/ds-test/src/test.sol"
       ],
       "versionRequirement": "^0.8.13",
       "artifacts": {
