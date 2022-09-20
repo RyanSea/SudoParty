@@ -32,10 +32,9 @@ contract SudoPartySpecific is SudoParty {
         }
     }
 
-    // nft id => bool
-    mapping (uint => bool) public exists;
-
     function buy() public {
+        updatePairList();
+
         uint unspent = router.swapETHForSpecificNFTs {value: partybank} (
             pairList, 
             payable(address(this)), 
@@ -50,61 +49,47 @@ contract SudoPartySpecific is SudoParty {
 
     /// @notice compares held ids from pool & adjusts ids from corresponding PairSwapSpecific instance
     function updatePairList() public {
-        ILSSVMRouter.PairSwapSpecific memory swap;
-
-        uint[] memory poolIds;
-
-        uint[] memory nftIds;
-
-        uint[] memory ids;
-
-        uint amount;
-
-        uint length = pairList.length;
+        IERC721 nft;
 
         uint _i;
 
+        uint amount;
+
+        address pool;
+
+        uint length = pairList.length;
+
         for (uint i; i < length; ) {
-            swap = pairList[i];
+            pool = address(pairList[i].pair);
 
-            poolIds = swap.pair.getAllHeldIds();
+            nft = pairList[i].pair.nft();
 
-            amount = poolIds.length;
+            amount = pairList[i].nftIds.length;
 
-            // iterate through pool ids and assign true to each
-            for (_i = 0; i < amount; ++i) {
-                exists[poolIds[_i]] = true;
+            // iterate through nftIds
+            for (_i = 0; i < amount; ) {
+                
+                // if pool is not owner of id, assign index to last item and pop last item
+                if (nft.ownerOf(pairList[i].nftIds[_i]) != pool) {
+                    
+                    pairList[i].nftIds[_i] = pairList[i].nftIds[--amount];
+
+                    pairList[i].nftIds.pop();
+
+                } else {
+                    ++_i;
+                }
             }
 
-            nftIds = swap.nftIds;
+            // if no nftIds exist in pool, delete PairSwapSpecific instance using same method
+            if (amount == 0) {
 
-            amount = nftIds.length;
+                pairList[i] = pairList[--length];
 
-            // iterate through nftIds and if true push to final ids array
-            for (_i = 0; i < amount; ++i) {
-                if (exists[nftIds[_i]]) ids[i] = nftIds[_i];
-            }
-
-            amount = poolIds.length;
-
-            // clear exists mapping
-            for (_i = 0; i < amount; ++i) {
-                exists[poolIds[_i]] = false;
-            }
-
-            // if no nftIds exist in pool, delete PairSwapSpecific instance
-            if (ids.length == 0) {
-                delete pairList[i];
-
-                --i;
-
-                --length;
+                pairList.pop();
             
-            // else set ids to swap's nftIds and set swap as PairSwapSpecifc instance
             } else {
-                swap.nftIds = ids;
-
-                pairList[i] = swap;
+                ++i;
             }
         }
     }

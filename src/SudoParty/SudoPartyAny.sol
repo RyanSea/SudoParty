@@ -50,19 +50,15 @@ contract SudoPartyAny is SudoParty {
             if (amount >= numItems) {
                 ++i;
 
-            } else if (amount < numItems) {
-                swap.numItems = amount;
+            } else if (amount == 0) {
+                pairList[i] = pairList[--length];
 
-                pairList[i] = swap;
+                pairList.pop();
+
+            } else if (amount < numItems) {
+                pairList[i].numItems = amount;
 
                 ++i;
-
-            } else if (amount == 0) {
-                delete pairList[i];
-
-                --i;
-
-                --length;
             }
         }
     }

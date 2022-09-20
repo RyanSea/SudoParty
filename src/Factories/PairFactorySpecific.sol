@@ -1,12 +1,10 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "../SudoParty/SudoPartyAny.sol";
+import "../SudoParty/SudoPartySpecific.sol";
 
-/// @notice factory for SudoParties
-contract PartyFactory {
-   function createParty(
-        string memory name,
+contract PairFactorySpecific {
+    function createPartySpecific(
         string memory _name,
         string memory _symbol,
         address[] memory whitelist,
@@ -14,16 +12,16 @@ contract PartyFactory {
         uint _quorum,
         address _factory,
         address _router,
-        ILSSVMRouter.PairSwapAny[] memory _pairList
+        ILSSVMRouter.PairSwapSpecific[] memory _pairList
     ) public returns (address payable) {
-        SudoParty party = new SudoPartyAny(
+        SudoPartySpecific party = new SudoPartySpecific(
             _name,
             _symbol,
-            whitelist,
-            _deadline,
-            _quorum,
-            _factory,
-            _router,
+            whitelist, 
+            _deadline, 
+            _quorum, 
+            _factory, 
+            _router, 
             _pairList
         );
 

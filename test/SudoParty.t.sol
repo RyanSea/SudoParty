@@ -5,7 +5,7 @@ import "forge-std/Test.sol";
 
 import "./utils/Utils.sol";
 
-import "src/Factories/PartyFactory.sol";
+import "src/Factories/PartyFactoryAny.sol";
 
 import "src/Factories/ManagerFactory.sol";
 

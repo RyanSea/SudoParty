@@ -42,7 +42,7 @@ abstract contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     ILSSVMRouter public router;
 
     /// @notice Sudoswap pool to buy from
-    ILSSVMPair public pool;
+    //ILSSVMPair public pool;
 
     /// @notice target nft
     /// @dev added name() and symbol() to the interface

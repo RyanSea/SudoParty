@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 import "lssvm/bonding-curves/CurveErrorCodes.sol";
 
+import "openzeppelin/token/ERC721/IERC721.sol";
+
 interface ILSSVMPair {
 
     enum PoolType {
@@ -10,6 +12,8 @@ interface ILSSVMPair {
         NFT,
         TRADE
     }
+
+    function nft() external view returns (IERC721 _nft);
 
     function getAllHeldIds() external view returns (uint256[] memory);
 
