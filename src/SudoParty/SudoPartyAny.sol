@@ -4,7 +4,6 @@ pragma solidity ^0.8.13;
 import "./SudoParty.sol";
 
 contract SudoPartyAny is SudoParty {
-
     ILSSVMRouter.PairSwapAny[] public pairList;
 
     constructor(
@@ -31,8 +30,23 @@ contract SudoPartyAny is SudoParty {
         }
     }
 
+    function buy() public {
+        updatePairList();
+
+        uint unspent = router.swapETHForAnyNFTs {value: partybank} (
+            pairList, 
+            payable(address(this)), 
+            manager, 
+            block.timestamp + 240 // swap deadline
+        );
+
+        success = true;
+
+        emit PartyWon(spent, unspent);
+    }
+
     function updatePairList() public {
-        ILSSVMRouter.PairSwapAny memory swap;
+        ILSSVMRouter.PairSwapAny[] memory swaps = pairList;
 
         uint length = pairList.length;
 
@@ -40,26 +54,33 @@ contract SudoPartyAny is SudoParty {
 
         uint numItems;
 
+        // iterate through swaps
         for (uint i; i < length; ) {
-            swap = pairList[i];
+            swap = swaps[i];
 
-            amount = swap.pair.getAllHeldIds().length;
+            amount = swaps[i].pair.getAllHeldIds().length;
 
-            numItems = swap.numItems;
+            numItems = swaps[i].numItems;
 
+            // if amount of nft's in pool >= nfts to buy, iterate
             if (amount >= numItems) {
-                ++i;
+                unchecked { ++i }
 
+            // if there are no nft's in pool, remove pairSwapAny item
             } else if (amount == 0) {
-                pairList[i] = pairList[--length];
+                swaps[i] = swaps[unchecked { --length }];
 
-                pairList.pop();
+                assembly { mstore(swaps, sub(mload(swaps), 1)) }
 
+            // if less nft's in pool than nft's to buy, set numItems to nft's in pool & iterate
             } else if (amount < numItems) {
-                pairList[i].numItems = amount;
+                swaps[i].numItems = amount;
 
-                ++i;
+                unchecked { ++i }
             }
         }
+
+        // update pairList
+        pairList = swaps;
     }
 }

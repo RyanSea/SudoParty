@@ -1870,8 +1870,8 @@
       }
     },
     "src/SudoParty/SudoPartyAny.sol": {
-      "lastModificationDate": 1663703550806,
-      "contentHash": "a41f171c3357ef3284226e65c12fcf6f",
+      "lastModificationDate": 1663804263606,
+      "contentHash": "b7d330c8fb0a0db4a08f04d5a1feefd2",
       "sourceName": "src/SudoParty/SudoPartyAny.sol",
       "solcConfig": {
         "settings": {

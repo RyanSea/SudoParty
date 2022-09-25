@@ -32,6 +32,7 @@ contract SudoPartySpecific is SudoParty {
         }
     }
 
+    /// @notice updates pairList & attempts to buy nfts
     function buy() public {
         updatePairList();
 
@@ -49,6 +50,8 @@ contract SudoPartySpecific is SudoParty {
 
     /// @notice compares held ids from pool & adjusts ids from corresponding PairSwapSpecific instance
     function updatePairList() public {
+        ILSSVMRouter.PairSwapSpecific[] memory swaps = pairList;
+
         IERC721 nft;
 
         uint _i;
@@ -57,41 +60,41 @@ contract SudoPartySpecific is SudoParty {
 
         address pool;
 
-        uint length = pairList.length;
+        uint length = swaps.length;
 
+        // iterate through swaps
         for (uint i; i < length; ) {
-            pool = address(pairList[i].pair);
+            pool = address(swaps[i].pair);
 
-            nft = pairList[i].pair.nft();
+            nft = swaps[i].pair.nft();
 
-            amount = pairList[i].nftIds.length;
+            amount = swaps[i].nftIds.length;
 
             // iterate through nftIds
             for (_i = 0; i < amount; ) {
-                
-                // if pool is not owner of id, assign index to last item and pop last item
-                if (nft.ownerOf(pairList[i].nftIds[_i]) != pool) {
-                    
-                    pairList[i].nftIds[_i] = pairList[i].nftIds[--amount];
+                // if pool is not owner of id, assign index to last item and remove last item
+                if (nft.ownerOf(swaps[i].nftIds[_i]) != pool) {
+                    swaps[i].nftIds[_i] = swaps[i].nftIds[unchecked { --amount }];
 
-                    pairList[i].nftIds.pop();
+                    assembly { mstore(swaps[i].nftIds, sub(mload(swaps[i].nftIds), 1)) }
 
                 } else {
-                    ++_i;
+                    unchecked { ++_i }
                 }
             }
 
-            // if no nftIds exist in pool, delete PairSwapSpecific instance using same method
+            // if no nftIds exist in pool, remove PairSwapSpecific item using same method
             if (amount == 0) {
+                swaps[i] = swaps[unchecked { --length }];
 
-                pairList[i] = pairList[--length];
-
-                pairList.pop();
+                assembly { mstore(swaps, sub(mload(swaps), 1)) }
             
             } else {
-                ++i;
+                unchecked { ++_i }
             }
         }
-    }
 
+        // update pairList
+        pairList = swaps;
+    }
 }
