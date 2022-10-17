@@ -56,6 +56,8 @@ contract SudoPartySpecific is SudoParty {
 
         uint _i;
 
+        uint256[] memory nftIds;
+
         uint amount;
 
         address pool;
@@ -64,33 +66,36 @@ contract SudoPartySpecific is SudoParty {
 
         // iterate through swaps
         for (uint i; i < length; ) {
+
             pool = address(swaps[i].pair);
 
             nft = swaps[i].pair.nft();
 
-            amount = swaps[i].nftIds.length;
+            nftIds = swaps[i].nftIds;
+
+            amount = nftIds.length;
 
             // iterate through nftIds
             for (_i = 0; i < amount; ) {
                 // if pool is not owner of id, assign index to last item and remove last item
-                if (nft.ownerOf(swaps[i].nftIds[_i]) != pool) {
-                    swaps[i].nftIds[_i] = swaps[i].nftIds[unchecked { --amount }];
+                if (nft.ownerOf(nftIds[_i]) != pool) {
+                    unchecked { nftIds[_i] = nftIds[--amount]; }
 
-                    assembly { mstore(swaps[i].nftIds, sub(mload(swaps[i].nftIds), 1)) }
-
+                    assembly { mstore(nftIds, sub(mload(nftIds), 1)) }
                 } else {
-                    unchecked { ++_i }
+                    unchecked { ++_i; }
                 }
+
+                swaps[i].nftIds = nftIds;
             }
 
             // if no nftIds exist in pool, remove PairSwapSpecific item using same method
             if (amount == 0) {
-                swaps[i] = swaps[unchecked { --length }];
+                unchecked { swaps[i] = swaps[--length]; }
 
                 assembly { mstore(swaps, sub(mload(swaps), 1)) }
-            
             } else {
-                unchecked { ++_i }
+                unchecked { ++_i; }
             }
         }
 

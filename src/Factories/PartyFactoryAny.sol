@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 import "../SudoParty/SudoPartyAny.sol";
 
+import "../Interfaces/ISudoParty.sol";
+
 /// @notice factory for SudoParties
 contract PartyFactoryAny {
    function createPartyAny(
@@ -15,7 +17,7 @@ contract PartyFactoryAny {
         address _factory,
         address _router,
         ILSSVMRouter.PairSwapAny[] memory _pairList
-    ) public returns (address payable) {
+    ) public returns (ISudoParty) {
         SudoParty party = new SudoPartyAny(
             _name,
             _symbol,
@@ -29,6 +31,6 @@ contract PartyFactoryAny {
 
         party.annoint(msg.sender);
 
-        return payable(party);
+        return ISudoParty(party);
     }
 }

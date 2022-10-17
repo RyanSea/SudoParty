@@ -8,7 +8,7 @@ contract ManagerFactory {
     function createManager(
         string memory name, 
         string memory symbol,
-        address party
+        ISudoParty party
     ) public returns (address) {
         SudoPartyManager manager = new SudoPartyManager(name, symbol, party);
 

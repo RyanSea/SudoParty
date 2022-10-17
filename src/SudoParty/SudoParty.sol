@@ -30,26 +30,16 @@ abstract contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     mapping (address => bool) public whitelisted;
 
     /// @notice deadline for SudoParty to complete purchase
-    uint public deadline;
+    uint public immutable deadline;
 
     /// @notice 0 - 100 (%)| quorum needed to pass a yes vote
-    uint public quorum;
+    uint public immutable quorum;
 
     /// @notice Sudoswap factory
-    ILSSVMPairFactory public factory;
+    ILSSVMPairFactory public immutable factory;
 
     /// @notice Sudoswap router
-    ILSSVMRouter public router;
-
-    /// @notice Sudoswap pool to buy from
-    //ILSSVMPair public pool;
-
-    /// @notice target nft
-    /// @dev added name() and symbol() to the interface
-    //IERC721 public immutable nft;
-
-    /// @notice target nft id
-    //uint public immutable id;
+    ILSSVMRouter public immutable router;
 
     /// @notice if party is open to any contributors
     bool public open;
@@ -252,11 +242,6 @@ abstract contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     /*///////////////////////////////////////////////////////////////
                                 SUDO QUERY                                                    
     //////////////////////////////////////////////////////////////*/
-    
-    /// @notice return true if pool holds nft id
-    // function isListed() public view returns (bool listed) {
-    //     listed = nft.ownerOf(id) == address(pool);
-    // }
 
     /// @notice sets price to current spot price and returns price
     // function getPrice() public returns (uint) {

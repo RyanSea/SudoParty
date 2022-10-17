@@ -3,29 +3,30 @@ pragma solidity ^0.8.13;
 
 import "./ILSSVMRouter.sol";
 
+import "../Interfaces/ISudoParty.sol";
+
 interface IPartyFactory {
 
     function createPartyAny(
         string memory name,
-        string memory _name,
-        string memory _symbol,
+        string memory symbol,
         address[] memory whitelist,
-        uint _deadline,
-        uint _quorum,
-        address _factory,
-        address _router,
-        ILSSVMRouter.PairSwapAny[] memory _pairList
-    ) external returns (address payable);
+        uint deadline,
+        uint quorum,
+        address factory,
+        address router,
+        ILSSVMRouter.PairSwapAny[] memory pairList
+    ) external returns (ISudoParty);
 
     function createPartySpecific(
-        string memory _name,
-        string memory _symbol,
+        string memory name,
+        string memory _ymbol,
         address[] memory whitelist,
-        uint _deadline,
-        uint _quorum,
-        address _factory,
-        address _router,
-        ILSSVMRouter.PairSwapSpecific[] memory _pairList
-    ) external returns (address payable);
+        uint deadline,
+        uint quorum,
+        address factory,
+        address router,
+        ILSSVMRouter.PairSwapSpecific[] memory pairList
+    ) external returns (ISudoParty);
 
 }

@@ -3,6 +3,8 @@ pragma solidity ^0.8.13;
 
 import "../SudoParty/SudoPartySpecific.sol";
 
+import "../Interfaces/ISudoParty.sol";
+
 contract PairFactorySpecific {
     function createPartySpecific(
         string memory _name,
@@ -13,7 +15,7 @@ contract PairFactorySpecific {
         address _factory,
         address _router,
         ILSSVMRouter.PairSwapSpecific[] memory _pairList
-    ) public returns (address payable) {
+    ) public returns (ISudoParty) {
         SudoPartySpecific party = new SudoPartySpecific(
             _name,
             _symbol,
@@ -27,6 +29,6 @@ contract PairFactorySpecific {
 
         party.annoint(msg.sender);
 
-        return payable(party);
+        return ISudoParty(party);
     }
 }

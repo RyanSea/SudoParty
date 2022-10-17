@@ -43,13 +43,13 @@ contract SudoPartyManager is ERC20, Monarchy, IERC721Receiver {
     constructor(
         string memory _name, 
         string memory _symbol,
-        address party
+        ISudoParty party
     ) ERC20(
         string(abi.encodePacked("Staked ", _name)),
         string(abi.encodePacked("s", _symbol)),
         18
     ){
-        token = ISudoParty(party);
+        token = party;
 
         nft = token.nft();
         id = token.id();

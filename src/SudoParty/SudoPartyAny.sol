@@ -56,19 +56,17 @@ contract SudoPartyAny is SudoParty {
 
         // iterate through swaps
         for (uint i; i < length; ) {
-            swap = swaps[i];
-
             amount = swaps[i].pair.getAllHeldIds().length;
 
             numItems = swaps[i].numItems;
 
             // if amount of nft's in pool >= nfts to buy, iterate
             if (amount >= numItems) {
-                unchecked { ++i }
+                unchecked { ++i; }
 
             // if there are no nft's in pool, remove pairSwapAny item
             } else if (amount == 0) {
-                swaps[i] = swaps[unchecked { --length }];
+                unchecked { swaps[i] = swaps[--length]; }
 
                 assembly { mstore(swaps, sub(mload(swaps), 1)) }
 
@@ -76,7 +74,7 @@ contract SudoPartyAny is SudoParty {
             } else if (amount < numItems) {
                 swaps[i].numItems = amount;
 
-                unchecked { ++i }
+                unchecked { ++i; }
             }
         }
 
