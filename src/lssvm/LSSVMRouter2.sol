@@ -41,7 +41,7 @@ contract LSSVMRouter2 {
 
     function _getFillableIdsAndCost(
         RobustPairSwapSpecific memory swapList
-    ) internal view returns (PairSwapSpecific memory buyList, uint cost) {
+    ) internal view returns (uint[] memory ids, uint cost) {
         LSSVMPair pair = swapList.swapList.pair;
         uint128 delta = pair.delta();
         uint128 spotPrice = pair.spotPrice();
@@ -50,7 +50,7 @@ contract LSSVMRouter2 {
 
         require(spotPrice <= swapList.maxSpotPrice, "SPOTPRICE_TOO_HIGH");
 
-        uint[] memory ids = swapList.swapList.nftIds;
+        ids = swapList.swapList.nftIds;
         address _pair = address(pair);
         IERC721 nft = pair.nft();
         uint length = ids.length;
@@ -69,8 +69,6 @@ contract LSSVMRouter2 {
         }
         
         ( , , ,cost, ) = pair.getBuyNFTQuote(length);
-
-        buyList = PairSwapSpecific(pair, ids);
     }
 
 }
