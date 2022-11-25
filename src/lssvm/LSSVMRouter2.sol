@@ -36,7 +36,7 @@ contract LSSVMRouter2 {
     }
 
     /*///////////////////////////////////////////////////////////////
-                             CONTRACT PARAMS
+                            INTERNAL FUNCTIONS
     ///////////////////////////////////////////////////////////////*/ 
 
     function _getFillableIdsAndCost(
