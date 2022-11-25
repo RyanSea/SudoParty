@@ -5,10 +5,9 @@ import "openzeppelin/token/ERC721/IERC721.sol";
 
 import "lssvm/LSSVMPair.sol";
 import "lssvm/ILSSVMPairFactoryLike.sol";
-import "lssvm/bonding-curves/CurveErrorCodes.sol";
 import "lssvm/bonding-curves/ICurve.sol";
 
-contract LSSVMRouter {
+contract LSSVMRouter2 {
 
     /*///////////////////////////////////////////////////////////////
                               INITIALIZATION
@@ -42,32 +41,36 @@ contract LSSVMRouter {
 
     function _getFillableIdsAndCost(
         RobustPairSwapSpecific memory swapList
-    ) internal returns (PairSwapSpecifc memory swapList, uint256 cost) {
-        address pair = swapList.swapList.pair;
-        uint128 delta = LSSVMPair(pair).delta();
-        uint128 spotPrice = LSSVMPair(pair).spotPrice();
+    ) internal view returns (PairSwapSpecific memory buyList, uint cost) {
+        LSSVMPair pair = swapList.swapList.pair;
+        uint128 delta = pair.delta();
+        uint128 spotPrice = pair.spotPrice();
 
         require(delta <= swapList.maxDelta, "DELTA_TOO_HIGH");
 
         require(spotPrice <= swapList.maxSpotPrice, "SPOTPRICE_TOO_HIGH");
 
-        uint[] ids = swapList.swapList.nftIds;
-        IERC721 nft = LSSVMPair(pair).nft();
+        uint[] memory ids = swapList.swapList.nftIds;
+        address _pair = address(pair);
+        IERC721 nft = pair.nft();
         uint length = ids.length;
 
         for(uint i; i < length; ) {
-            if(nft.ownerOf(ids[i]) != pair) {
+            if(nft.ownerOf(ids[i]) != _pair) {
                 // move last item of array to index & decrement length
                 unchecked { ids[i] = ids[--length]; }
 
-                // remove last item of array
+                // remove last item of array 
+                // note: simulates pop() for a memory arr
                 assembly { mstore(ids, sub(mload(ids), 1)) }
             } else {
                 unchecked { ++i; }
             }
         }
         
-        cost = LSSVMPair(pair).getBuyNFTQuote(length);
+        ( , , ,cost, ) = pair.getBuyNFTQuote(length);
+
+        buyList = PairSwapSpecific(pair, ids);
     }
 
 }

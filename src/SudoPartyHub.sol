@@ -32,11 +32,11 @@ contract SudoPartyHub {
 
     constructor(
         address _factory_any, 
-        address _factory_specfic,
+        address _factory_specific,
         address _manager_factory
     ) {
         factory_any = IPartyFactory(_factory_any);
-        factory_specific = IPartyFactory(_factory_specifc);
+        factory_specific = IPartyFactory(_factory_specific);
         manager_factory = IManagerFactory(_manager_factory);
     }
 
@@ -60,7 +60,7 @@ contract SudoPartyHub {
 
     ) public returns (ISudoParty party) {
         // create party
-        ISudoParty party = factory_any.createPartyAny(
+        party = factory_any.createPartyAny(
             name, 
             symbol, 
             whitelist, 
@@ -75,7 +75,7 @@ contract SudoPartyHub {
         address _manager = manager_factory.createManager(name, symbol, party);
 
         // map manager to party
-        manager[party] = _manager;
+        manager[party] = ISudoPartyManager(_manager);
 
         // set manager to party
         party.setManager(_manager);
@@ -108,7 +108,7 @@ contract SudoPartyHub {
         address _manager = manager_factory.createManager(name, symbol, party);
 
         // map manager to party
-        manager[party] = _manager;
+        manager[party] = ISudoPartyManager(_manager);
 
         // set manager to party
         party.setManager(_manager);

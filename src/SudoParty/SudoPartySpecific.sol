@@ -100,6 +100,6 @@ contract SudoPartySpecific is SudoParty {
         }
 
         // update pairList
-        pairList = swaps;
+        //pairList = swaps;
     }
 }

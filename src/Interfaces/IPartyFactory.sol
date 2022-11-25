@@ -3,7 +3,7 @@ pragma solidity ^0.8.13;
 
 import "./ILSSVMRouter.sol";
 
-import "../Interfaces/ISudoParty.sol";
+import "../interfaces/ISudoParty.sol";
 
 interface IPartyFactory {
 

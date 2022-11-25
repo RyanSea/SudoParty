@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "../SudoParty/SudoPartyAny.sol";
+import "../sudoparty/SudoPartyAny.sol";
 
-import "../Interfaces/ISudoParty.sol";
+import "../interfaces/ISudoParty.sol";
 
 /// @notice factory for SudoParties
 contract PartyFactoryAny {
@@ -31,6 +31,6 @@ contract PartyFactoryAny {
 
         party.annoint(msg.sender);
 
-        return ISudoParty(party);
+        return ISudoParty(address(party));
     }
 }

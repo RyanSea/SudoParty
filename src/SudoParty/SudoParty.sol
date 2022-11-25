@@ -30,16 +30,16 @@ abstract contract SudoParty is ERC20, IERC721Receiver, Monarchy {
     mapping (address => bool) public whitelisted;
 
     /// @notice deadline for SudoParty to complete purchase
-    uint public immutable deadline;
+    uint public deadline;
 
     /// @notice 0 - 100 (%)| quorum needed to pass a yes vote
-    uint public immutable quorum;
+    uint public quorum;
 
     /// @notice Sudoswap factory
-    ILSSVMPairFactory public immutable factory;
+    ILSSVMPairFactory public factory;
 
     /// @notice Sudoswap router
-    ILSSVMRouter public immutable router;
+    ILSSVMRouter public router;
 
     /// @notice if party is open to any contributors
     bool public open;

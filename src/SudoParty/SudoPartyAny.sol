@@ -81,6 +81,6 @@ contract SudoPartyAny is SudoParty {
         }
 
         // update pairList
-        pairList = swaps;
+        //pairList = swaps;
     }
 }

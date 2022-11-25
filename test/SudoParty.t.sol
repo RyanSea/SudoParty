@@ -3,19 +3,19 @@ pragma solidity ^0.8.13;
 
 import "forge-std/Test.sol";
 
-import "./utils/Utils.sol";
+// import "./utils/Utils.sol";
 
-import "src/Factories/PartyFactoryAny.sol";
+// import "src/Factories/PartyFactoryAny.sol";
 
-import "src/Factories/ManagerFactory.sol";
+// import "src/Factories/ManagerFactory.sol";
 
-import "src/SudoParty/SudoParty.sol";
+// import "src/SudoParty/SudoParty.sol";
 
-import "src/SudoParty/SudoPartyManager.sol";
+// import "src/SudoParty/SudoPartyManager.sol";
 
-import "src/SudoPartyHub.sol";
+// import "src/SudoPartyHub.sol";
 
-import "src/Interfaces/ILSSVMPairFactory.sol";
+// import "src/Interfaces/ILSSVMPairFactory.sol";
 
 //import "src/Interfaces/ILSSVMRouter.sol";
 
@@ -23,39 +23,39 @@ import "src/Interfaces/ILSSVMPairFactory.sol";
 
 contract SudoPartyTest is Test {
 
-    SudoPartyHub sudoparty;
+    // SudoPartyHub sudoparty;
 
-    ISudoPartyManager manager;
+    // ISudoPartyManager manager;
 
-    address payable party;
+    // address payable party;
 
-    ILSSVMRouter router;
+    // ILSSVMRouter router;
 
-    ILSSVMPairFactory factory;
+    // ILSSVMPairFactory factory;
 
-    ILSSVMPair pool;
+    // ILSSVMPair pool;
 
-    IERC721 nft;
+    // IERC721 nft;
 
-    uint id;   
+    // uint id;   
 
-    // SudoPartyManager-created pool
-    address relisting;
+    // // SudoPartyManager-created pool
+    // address relisting;
 
-    Utils internal utils;
+    // Utils internal utils;
 
-    address payable[] internal users;
+    // address payable[] internal users;
 
-    address ryan;
-    address nich;
-    address owen;
-    address sharelove;
+    // address ryan;
+    // address nich;
+    // address owen;
+    // address sharelove;
 
-    enum ProposalType {
-        sell,
-        set_consensus,
-        withdraw
-    }
+    // enum ProposalType {
+    //     sell,
+    //     set_consensus,
+    //     withdraw
+    // }
 
     // function setUp() public {
     //     utils = new Utils();
