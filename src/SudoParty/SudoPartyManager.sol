@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "../Interfaces/ILSSVMPairFactory.sol";
+import "../interfaces/ILSSVMPairFactory.sol";
 
-import "../Interfaces/ISudoParty.sol";
+import "../interfaces/ISudoParty.sol";
 
 import "solmate/tokens/ERC20.sol";
 

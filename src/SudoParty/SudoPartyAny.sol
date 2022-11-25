@@ -30,6 +30,7 @@ contract SudoPartyAny is SudoParty {
         }
     }
 
+    /// @notice attempts to buy nfts from pairList
     function buy() public {
         updatePairList();
 
@@ -45,6 +46,7 @@ contract SudoPartyAny is SudoParty {
         emit PartyWon(spent, unspent);
     }
 
+    /// @notice removes any sold nfts from pairList
     function updatePairList() public {
         ILSSVMRouter.PairSwapAny[] memory swaps = pairList;
 

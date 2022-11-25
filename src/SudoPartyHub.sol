@@ -1,13 +1,13 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.13;
 
-import "./Interfaces/ILSSVMRouter.sol";
+import "./interfaces/ILSSVMRouter.sol";
 
-import "./Interfaces/ISudoParty.sol";
-import "./Interfaces/ISudoPartyManager.sol";
+import "./interfaces/ISudoParty.sol";
+import "./interfaces/ISudoPartyManager.sol";
 
-import "./Interfaces/IPartyFactory.sol";
-import "./Interfaces/IManagerFactory.sol";
+import "./interfaces/IPartyFactory.sol";
+import "./interfaces/IManagerFactory.sol";
 
 import "openzeppelin/token/ERC721/IERC721.sol";
 import "openzeppelin/utils/Strings.sol";

@@ -6,4 +6,4 @@ openzeppelin/=lib/openzeppelin-contracts/contracts/
 prb-math/=lib/lssvm/lib/prb-math/contracts/
 solmate/=lib/solmate/src/
 weird-erc20/=lib/lssvm/lib/solmate/lib/weird-erc20/src/
-Monarchy/=src/Auth/Monarchy.sol
+Monarchy/=src/auth/Monarchy.sol
